@@ -1,15 +1,8 @@
-apiVersion: project.openshift.io/v1
-description: "External Secret Operator Namespace"
-displayName: external-secrets
-kind: ProjectRequest
-metadata:
-    name: external-secrets
----
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   name: external-secrets-operator
-  namespace: external-secrets
+  namespace: openshift-operators
 spec:
   channel: alpha
   installPlanApproval: Automatic
@@ -21,7 +14,7 @@ apiVersion: operator.external-secrets.io/v1alpha1
 kind: OperatorConfig
 metadata:
   name: external-secrets-operator
-  namespace: external-secrets
+  namespace: openshift-operators
 spec:
   prometheus:
     enabled: true
