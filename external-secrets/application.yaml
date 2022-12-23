@@ -2,11 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: external-secrets
-  namespace: external-secrets
+  namespace: openshift-operators
 spec:
   project: default
   source:
-    chart: openshift-operators
+    chart: external-secrets
     repoURL: https://charts.external-secrets.io
     targetRevision: v0.7.0
     helm:
