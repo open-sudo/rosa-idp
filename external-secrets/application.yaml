@@ -6,10 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    chart: external-secrets
-    repoURL: https://charts.external-secrets.io
-    helm:
-      releaseName: external-secrets
+    repoURL: https://github.com/open-sudo/rosa-idp.git
+    path: external-secrets
+    targetVersion: master
   destination:
     server: "https://kubernetes.default.svc"
     namespace: external-secrets
