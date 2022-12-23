@@ -6,12 +6,11 @@ metadata:
 spec:
   project: default
   source:
-    chart: external-secrets
+    chart: openshift-operators
     repoURL: https://charts.external-secrets.io
     targetRevision: v0.7.0
     helm:
       releaseName: external-secrets
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: external-secrets
-    createNamespace: true
+    namespace: openshift-operators
