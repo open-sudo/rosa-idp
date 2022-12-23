@@ -1,3 +1,10 @@
+apiVersion: project.openshift.io/v1
+description: "External Secret Operator Namespace"
+displayName: external-secrets-operator
+kind: ProjectRequest
+metadata:
+    name: external-secrets-operator
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
