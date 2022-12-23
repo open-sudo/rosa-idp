@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: external-secrets
-  namespace: openshift-operators
+  namespace: external-secrets
 spec:
   project: default
   source:
@@ -12,4 +12,10 @@ spec:
       releaseName: external-secrets
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: openshift-operators
+    namespace: external-secrets
+  syncPolicy: 
+    automated:
+      prune: true
+      selfHeal: false
+    syncOptions:
+    - CreateNamespace=true
