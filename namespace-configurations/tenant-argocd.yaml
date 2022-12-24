@@ -1,0 +1,176 @@
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: tenant-argocd
+spec:
+  labelSelector:
+    matchLabels:
+      environment: build
+  templates:  
+    - objectTemplate: |
+        apiVersion: argoproj.io/v1alpha1
+        kind: ArgoCD
+        metadata:
+          name: tenant-gitops
+          namespace: "{{ .Name }}"
+        spec:
+          server:
+            autoscale:
+              enabled: false
+            grpc:
+              ingress:
+                enabled: false
+            ingress:
+              enabled: false
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 125m
+                memory: 128Mi
+            route:
+              enabled: true
+              tls:
+                insecureEdgeTerminationPolicy: Redirect
+                termination: reencrypt      
+            service:
+              type: ''
+          grafana:
+            enabled: false
+            ingress:
+              enabled: false
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            route:
+              enabled: false
+          prometheus:
+            enabled: false
+            ingress:
+              enabled: false
+            route:
+              enabled: false
+          initialSSHKnownHosts: {}
+          applicationSet:
+            resources:
+              limits:
+                cpu: '2'
+                memory: 1Gi
+              requests:
+                cpu: 250m
+                memory: 512Mi
+          rbac:
+            defaultPolicy: 'role:admin'
+            policy: 'g, system:cluster-admins, role:admin'
+            scopes: '[groups]'
+          repo:
+            resources:
+              limits:
+                cpu: '1'
+                memory: 1Gi
+              requests:
+                cpu: 250m
+                memory: 256Mi
+          resourceExclusions: |
+            - apiGroups:
+              - tekton.dev
+              clusters:
+              - '*'
+              kinds:
+              - TaskRun
+              - PipelineRun
+          dex:
+            openShiftOAuth: true
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+          ha:
+            enabled: false
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+          tls:
+            ca: {}
+          redis:
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+          controller:
+            processors: {}
+            resources:
+              limits:
+                cpu: '2'
+                memory: 2Gi
+              requests:
+                cpu: 250m
+                memory: 1Gi
+            sharding: {}
+          resourceCustomizations: |  
+            dbaas.redhat.com/DBaaSInstance:
+              health.lua: |
+                hs = {}
+                if obj.status ~= nil then
+                  if obj.status.phase ~= nil then
+                    if obj.status.phase == "Ready" then
+                      hs.status = "Healthy"
+                      hs.message = obj.status.phase
+                      return hs
+                    end
+                  end
+                end
+                hs.status = "Progressing"
+                hs.message = "Waiting for DBaaSInstance to become Ready"
+                return hs            
+--- 
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: tenant-argocd-sa-edit
+spec:
+  labelSelector:
+    matchExpressions:
+      - key: team
+        operator: Exists
+  templates:     
+    - objectTemplate: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: RoleBinding
+        metadata:
+          name: "{{ .Labels.app }}-tenant-argocd-sa-edit"
+          namespace: "{{ .Name }}"
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: edit
+        subjects:          
+        - kind: ServiceAccount
+          name: tenant-gitops-argocd-application-controller
+          namespace: "{{ index .Labels "build-namespace" }}"
+        - kind: ServiceAccount
+          name: tenant-gitops-applicationset-controller
+          namespace: "{{ index .Labels "build-namespace" }}"
+        - kind: ServiceAccount
+          name: tenant-gitops-argocd-server
+          namespace: "{{ index .Labels "build-namespace" }}"
+        - kind: ServiceAccount
+          name: tenant-gitops-argocd-dex-server
+          namespace: "{{ index .Labels "build-namespace" }}"          
+                     

@@ -1,0 +1,52 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: github-action-runner-deployment
+spec:
+  labelSelector:
+    matchLabels:
+      environment: build
+  templates:  
+    - objectTemplate: |
+        apiVersion: actions.summerwind.dev/v1alpha1
+        kind: RunnerDeployment
+        metadata:
+          name: "{{ .Labels.app }}-build-runner"
+          namespace: "{{ .Name }}"
+        spec:
+          replicas: 2
+          selector: null
+          template:
+            metadata: {}
+            spec:
+              dockerEnabled: false
+              dockerdContainerResources: {}
+              ephemeral: true
+              image: ''
+              labels:
+                - "{{ .Labels.app }}"
+                - self-hosted
+              organization: {{ (lookup "v1" "Secret" "backstage" "github-credentials").data.GITHUB_ORG | b64dec }}
+              resources: 
+                requests: 
+                  cpu: "200m"
+                  memory: "1Gi"
+              securityContext:
+                runAsUser: 1000
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: sonarqube-credentials
+                mountPath: /github/home/_sonarqube  
+              - name: github-credentials
+                mountPath: /github/home/_github                
+              volumes:
+              - name: sonarqube-credentials
+                secret:
+                  secretName: sonarqube-credentials
+              - name: github-credentials
+                secret:
+                  secretName: github-credentials                             
+      excludedPaths:
+        - .status	
+        - .spec.replicas	
+        - .metadata

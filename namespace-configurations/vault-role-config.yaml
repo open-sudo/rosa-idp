@@ -1,0 +1,217 @@
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: team-vault-role
+spec:
+  labelSelector:
+    matchExpressions:
+      - key: team
+        operator: Exists
+      - key: environment
+        operator: NotIn
+        values:
+        - build        
+  templates:     
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: KubernetesAuthEngineRole
+        metadata:
+          name: {{ .Labels.team }}-vault-role
+          namespace: vault-admin
+        spec:
+          # Add fields here
+          authentication: 
+            path: kubernetes
+            role: policy-admin
+          path: kubernetes
+          policies:
+            - {{ .Labels.team }}-read-token
+          targetNamespaces:
+            targetNamespaceSelector:
+              matchLabels:
+                team: {{ .Labels.team }}
+          targetServiceAccounts:
+          - default
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas                
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: Policy
+        metadata:
+          name: {{ .Labels.team }}-read-token
+          namespace: vault-admin
+        spec:
+          # Add fields here
+          authentication: 
+            path: kubernetes
+            role: policy-admin
+          policy: |
+            # create tokens
+            path "/github/token/{{ .Labels.team }}" {
+              capabilities = ["read"]
+            }
+            path "/quay/creds/{{ .Labels.team }}" {
+              capabilities = ["read"]
+            }
+            path "/quay/creds/{{ .Labels.team }}-pusher" {
+              capabilities = ["read"]
+            }
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas                                     
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: QuaySecretEngineRole
+        metadata:
+          name: {{ .Labels.team }}
+          namespace: vault-admin
+        spec:
+          authentication: 
+            path: kubernetes
+            role: policy-admin
+          path: quay
+          namespaceName: raf-backstage-demo
+          defaultPermission: read
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas                       
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: VaultSecret
+        metadata:
+          name: quay-pull-secret
+          namespace: {{ .Name }}
+        spec:
+          vaultSecretDefinitions:
+          - authentication:
+              path: kubernetes
+              role: {{ .Labels.team }}-vault-role
+              serviceAccount:
+                name: default
+            name: quaytoken
+            path: quay/creds/{{ .Labels.team }}
+          output:
+            name: quay-pull-secret
+            stringData:
+              .dockerconfigjson: |
+                {"auths":{"quay.io":{"username":"{{ "{{" }} .quaytoken.username {{ "}}" }}","password":"{{ "{{" }} .quaytoken.password {{ "}}" }}","email":"{{ "{{" }} .quaytoken.username {{ "}}" }}@example.com","auth":"{{ "{{" }} list .quaytoken.username ":" .quaytoken.password | join "" | b64enc {{ "}}" }}"}}}
+            type: kubernetes.io/dockerconfigjson
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas                
+---
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: team-build-vault-role
+spec:
+  labelSelector:
+    matchExpressions:
+      - key: team
+        operator: Exists
+      - key: environment
+        operator: In
+        values:
+        - build        
+  templates: 
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: QuaySecretEngineRole
+        metadata:
+          name: {{ .Labels.team }}-pusher
+          namespace: vault-admin
+        spec:
+          authentication: 
+            path: kubernetes
+            role: policy-admin
+          path: quay
+          namespaceName: raf-backstage-demo
+          namespaceType: organization
+          defaultPermission: write
+          createRepositories: true
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas             
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: VaultSecret
+        metadata:
+          name: quay-push-secret
+          namespace: {{ .Name }}
+        spec:
+          vaultSecretDefinitions:
+          - authentication:
+              path: kubernetes
+              role: {{ .Labels.team }}-vault-role
+              serviceAccount:
+                name: default
+            name: quaytoken
+            path: quay/creds/{{ .Labels.team }}-pusher
+          output:
+            name: quay-push-secret
+            stringData:
+              .dockerconfigjson: |
+                {"auths":{"quay.io":{"username":"{{ "{{" }} .quaytoken.username {{ "}}" }}","password":"{{ "{{" }} .quaytoken.password {{ "}}" }}","email":"{{ "{{" }} .quaytoken.username {{ "}}" }}@example.com","auth":"{{ "{{" }} list .quaytoken.username ":" .quaytoken.password | join "" | b64enc {{ "}}" }}"}}}
+            type: kubernetes.io/dockerconfigjson
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas             
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: GitHubSecretEngineRole
+        metadata:
+          name: {{ .Labels.team }}
+          namespace: vault-admin
+        spec:
+          authentication: 
+            path: kubernetes
+            role: policy-admin
+          path: github
+          organizationName: dummy
+          repositories: []
+          permissions: 
+            pull_requests: write
+            metadata: read
+            contents: write
+            repository_hooks: write
+      excludedPaths:
+        - .spec.organizationName
+        - .metadata
+        - .status
+        - .spec.replicas             
+    - objectTemplate: |
+        apiVersion: redhatcop.redhat.io/v1alpha1
+        kind: VaultSecret
+        metadata:
+          name: github-credentials
+          namespace: {{ .Name }}
+        spec:
+          vaultSecretDefinitions:
+          - authentication:
+              path: kubernetes
+              role: {{ .Labels.team }}-vault-role
+              serviceAccount:
+                name: default
+            name: githubtoken
+            path: github/token/{{ .Labels.team }}
+          output:
+            name: github-credentials
+            stringData:
+              token: "{{ "{{" }} .githubtoken.token {{ "}}" }}"
+              .gitconfig: |
+                [credential "https://github.com"]
+                  helper = store
+              .git-credentials: |
+                https://git:{{ "{{" }} .githubtoken.token {{ "}}" }}@github.com
+      excludedPaths:
+        - .metadata
+        - .status
+        - .spec.replicas                               

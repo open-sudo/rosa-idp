@@ -1,0 +1,87 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: NamespaceConfig
+metadata:
+  name: servicemesh-membership
+spec:
+  labelSelector:
+    matchExpressions:
+      - key: team
+        operator: Exists
+      - key: environment
+        operator: NotIn
+        values:
+        - build  
+  templates:     
+    - objectTemplate: |
+        kind: ServiceMeshMember
+        apiVersion: maistra.io/v1
+        metadata:
+          name: default
+          namespace: {{ .Name }}
+        spec:
+          controlPlaneRef:
+            name: basic
+            namespace: istio-system
+    - objectTemplate: |            
+        apiVersion: monitoring.coreos.com/v1
+        kind: PodMonitor
+        metadata:
+          name: envoy-pods
+          namespace: {{ .Name }}
+        spec:
+          selector:
+            matchExpressions:
+            - key: "service.istio.io/canonical-name"
+              operator: Exists
+          podMetricsEndpoints:
+          - port: http-envoy-prom
+            path: /stats/prometheus
+            scheme: http
+            honorLabels: true
+            honorTimestamps: true
+            interval: 15s
+            scrapeTimeout: 10s
+    - objectTemplate: |
+        kind: NetworkPolicy
+        apiVersion: networking.k8s.io/v1
+        metadata:
+          name: allow-user-workload-monitoring
+          namespace: {{ .Name }}
+        spec:
+          podSelector: 
+            matchExpressions:
+            - key: "service.istio.io/canonical-name"
+              operator: Exists
+          ingress:
+            - from:
+              - namespaceSelector:
+                  matchLabels:
+                    name: openshift-user-workload-monitoring
+              ports:
+              - protocol: TCP
+                port: 15090        
+          policyTypes:
+            - Ingress 
+    - objectTemplate: |
+        kind: NetworkPolicy
+        apiVersion: networking.k8s.io/v1
+        metadata:
+          name: allow-cnv-connections
+          namespace: {{ .Name }}
+        spec:
+          podSelector: {}
+          ingress:
+            - from:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: openshift-cnv
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: openshift-virtualization-os-images  
+              ports:
+              - protocol: TCP
+                port: 443
+              - protocol: TCP
+                port: 8443                                                             
+          policyTypes:
+            - Ingress                                           
