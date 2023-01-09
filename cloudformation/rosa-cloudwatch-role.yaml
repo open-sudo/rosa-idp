@@ -21,8 +21,8 @@ Resources:
         - ${RosaClusterName}
         - RosaClusterName: !Join
           - ''
-          - - '-RosaClusterWatch'
-            - !Ref ClusterName
+          - - !Ref ClusterName
+            - '-RosaClusterWatch'
       AssumeRolePolicyDocument: !Sub
         - |
           {
