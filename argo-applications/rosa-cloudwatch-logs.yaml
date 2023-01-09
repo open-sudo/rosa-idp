@@ -13,9 +13,7 @@ spec:
     path: rosa-cloudwatch-logs
     directory:
       include: "*.yaml"
-    chart: rosa-cloudwatch-logs
     helm:
-      releaseName: rosa-cloudwatch-logs
       values: |
         installCRDs: true
         rosa.region: us-east-2
