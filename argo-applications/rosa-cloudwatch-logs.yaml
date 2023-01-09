@@ -18,9 +18,9 @@ spec:
       releaseName: rosa-cloudwatch-logs
       values: |
         installCRDs: true
-        rosa.region: {{ROSA_CLUSTER_REGION}}
-        rosa.name: {{ROSA_CLUSTER_NAME}}
-        aws.cloudwatch.roleArn: {{CLOUDWATCH_ROLE_ARN}}
+        rosa.region: us-east-2
+        rosa.name: montreal
+        aws.cloudwatch.roleArn: "arn:aws:iam::218444713402:role/montreal-RosaClusterWatch"
 
   destination:
     server: https://kubernetes.default.svc
