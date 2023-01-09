@@ -3,10 +3,10 @@
 # Declare variables to be passed into your templates.
 
 rosa:
-  clusterName: {{CLUSTER_NAME}}
-  region: {{CLUSTER_REGION}}
+  clusterName: montreal
+  region: us-east-2
 
 
 aws:
   cloudwatch:
-     roleArn: {{CLOUDWATCH_ROLE_ARN}}
+     roleArn: "arn:aws:iam::218444713402:role/montreal-RosaClusterWatch"
