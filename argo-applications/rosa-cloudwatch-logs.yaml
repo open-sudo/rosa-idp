@@ -11,8 +11,6 @@ spec:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
     path: rosa-cloudwatch-logs
-    directory:
-      include: "*.yaml"
     helm:
       values: |
         installCRDs: true
