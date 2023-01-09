@@ -1,0 +1,25 @@
+apiVersion: "logging.openshift.io/v1"
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  outputs:
+    - name: cw
+      type: cloudwatch
+      cloudwatch:
+        groupBy: namespaceName
+        groupPrefix: rosa-{{ .Values.rosa.clusterName }}
+        region: {{ .Values.rosa.region }}
+      secret:
+        name: cloudwatch-credentials
+  pipelines:
+     - name: to-cloudwatch
+       inputRefs:
+         - infrastructure
+         - audit
+         - application
+       outputRefs:
+         - cw
+
+

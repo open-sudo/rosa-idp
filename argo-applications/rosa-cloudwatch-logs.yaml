@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rosa-cloudwatch-logs
+  namespace: openshift-gitops
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io  
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/open-sudo/rosa-idp.git
+    targetRevision: HEAD
+    path: rosa-cloudwatch-logs
+    directory:
+      include: "*.yaml"
+    chart: rosa-cloudwatch-logs
+    helm:
+      releaseName: rosa-cloudwatch-logs
+      values: |
+        installCRDs: true
+        rosa.region: {{ROSA_CLUSTER_REGION}}
+        rosa.name: {{ROSA_CLUSTER_NAME}}
+        aws.cloudwatch.roleArn: {{CLOUDWATCH_ROLE_ARN}}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+    - ApplyOutOfSyncOnly=true    
+    retry:
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 10m # the maximum amount of time allowed for the backoff strategy 

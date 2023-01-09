@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+
+Parameters:
+  OidcProvider:
+    Type: String
+  AppNamespace:
+    Type: String
+    Default: "openshift-logging"
+  AppServiceAccountName:
+    Type: String
+    Default: "logcollector"
+  ClusterName:
+    Type: String
+
+Resources:
+  CloudWatchRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub
+        - ${RosaClusterName}
+        - RosaClusterName: !Join
+          - ''
+          - - '-RosaClusterWatch'
+            - !Ref ClusterName
+      AssumeRolePolicyDocument: !Sub
+        - |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "${IamOidcProviderArn}"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                        "StringEquals": {
+                            "${OidcProvider}:sub": "system:serviceaccount:${AppNamespace}:${AppServiceAccountName}"
+                        }
+                    }
+                }
+            ]
+          }
+        - IamOidcProviderArn: !Join
+          - ''
+          - - 'arn:aws:iam::'
+            - !Ref AWS::AccountId
+            - ':oidc-provider/'
+            - !Ref OidcProvider
+          OidcProvider: !Ref OidcProvider
+          AppNamespace: !Ref AppNamespace
+          AppServiceAccountName: !Ref AppServiceAccountName
+
+      Path: "/"
+  RolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "RosaCloudWatch"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              -  "logs:CreateLogGroup"
+              -  "logs:CreateLogStream"
+              -  "logs:DescribeLogGroups"
+              -  "logs:DescribeLogStreams"
+              -  "logs:PutLogEvents"
+              -  "logs:PutRetentionPolicy"
+            Resource: "arn:aws:logs:*:*:*"
+      Roles:
+        - Ref: "CloudWatchRole"
+             
+  RootInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: "CloudWatchRole"
+            
+          
+Outputs:
+    RosaCloudWatchRoleArn:
+        Value: !GetAtt CloudWatchRole.Arn

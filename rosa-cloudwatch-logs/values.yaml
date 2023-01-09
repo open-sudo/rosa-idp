@@ -1,0 +1,12 @@
+# Default values for rosa-cloudwatch-logs.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rosa:
+  clusterName: {{CLUSTER_NAME}}
+  region: {{CLUSTER_REGION}}
+
+
+aws:
+  cloudwatch:
+     roleArn: {{CLOUDWATCH_ROLE_ARN}}
