@@ -1,0 +1,9 @@
+apiVersion: v2
+name: argcd-umbrella-application
+type: Application
+version: 1.0.0
+appVersion: "1.0.0"
+dependencies:
+- name: cloudwatch-logging
+  repository: https://github.com/open-sudo/rosa-idp/cloudwatch-logging
+

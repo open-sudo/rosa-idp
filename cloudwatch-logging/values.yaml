@@ -1,0 +1,8 @@
+rosa:
+   region: some
+   clusterName: some
+
+aws:
+  cloudwatch:
+     roleArn: some
+
