@@ -21,7 +21,8 @@ Be sure  you verify that all environment variables are set.
 4) Execute cloudformation scripts to create the necessary roles:
 
 ```shell
-aws cloudformation create-stack --template-body file://rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+cd rosa_idp
+aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
 5) Wait 2 or 3 min and retrieve the role ARN:
@@ -69,5 +70,5 @@ oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
 # wait a couple of minutes...
 oc apply -f ./argocd/argocd.yaml
-oc apply -f ./argocd/argo-root-application.yaml
+oc apply -f ./argocd/root-application.yaml
 ```
