@@ -14,17 +14,6 @@ spec:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudwatch-credentials
-  namespace: openshift-logging
-  annotations:
-    argocd.argoproj.io/sync-wave: "5"
-
-stringData:
-  role_arn: {{ .Values.aws.cloudwatch.roleArn }}
----
 apiVersion: "logging.openshift.io/v1"
 kind: ClusterLogForwarder
 metadata:

@@ -1,8 +1,5 @@
 rosa:
-   region: some
-   clusterName: some
+   region: __REGION__
+   clusterName: __CLUSTER_NAME__
 
-aws:
-  cloudwatch:
-     roleArn: some
 

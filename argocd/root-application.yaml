@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
-    path: argo-applications
+    path: argocd/applications
     directory:
       include: "*.yaml"
   destination:

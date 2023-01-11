@@ -1,8 +1,0 @@
-rosa:
-  region: __REGION__
-  
-
-aws:
-  accountId: __AWS_ACCOUNT_ID__
-  cloudwatch:
-     roleArn: __ROLE_ARN__

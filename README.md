@@ -16,10 +16,32 @@ export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text
 ```shell
 echo "Cluster: ${ROSA_CLUSTER_NAME}, Region: ${REGION}, OIDC Endpoint: ${OIDC_ENDPOINT}, AWS Account ID: ${AWS_ACCOUNT_ID}"
 ```
-5) Execute cloudformation scripsts:
+5) Execute cloudformation scripsts to create the necessary role:
 
 ```shell
 aws cloudformation create-stack --template-body file://../rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+```
+
+6) Wait 2 or 3 min and retrieve the role ARN:
+
+```shell
+aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs  --query 'Stacks[0].Outputs[0].OutputValue'
+```
+
+If no role ARN is returned, check the status with:
+
+```shell
+aws cloudformation describe-stack-events --stack-name rosa-idp-cw-logs
+```
+
+If, however the role is provided, insert it in an environment variable
+```shell
+export ROLE_ARN=$(aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs  --query 'Stacks[0].Outputs[0].OutputValue')
+```
+7) Create secrets
+
+```shell
+oc apply -f credentials/cloudwatch-credentials.yaml
 ```
 
 6) Set your github repo name as environment variable

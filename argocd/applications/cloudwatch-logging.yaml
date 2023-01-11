@@ -14,9 +14,9 @@ spec:
     helm:
       values: |
         installCRDs: true
-        rosa.region: ${REGION}
-        rosa.name: ${ROSA_CLUSTER_NAME}
-        aws.cloudwatch.roleArn: "arn:aws:iam::${AWS_ACCOUNT_ID}:role/${ROSA_CLUSTER_NAME}-RosaClusterWatch"
+        rosa.region: __REGION__
+        rosa.name: __CLUSTER_NAME__
+        aws.cloudwatch.roleArn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatch"
 
   destination:
     server: https://kubernetes.default.svc
