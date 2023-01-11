@@ -10,13 +10,13 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: rosa-cloudwatch-logs
-    helm:
-      values: |
-        installCRDs: true
-        rosa.region: us-east-2
-        rosa.name: montreal
-        aws.cloudwatch.roleArn: "arn:aws:iam::218444713402:role/montreal-RosaClusterWatch"
+    path: cloudwatch-logging
+#    helm:
+#      values: |
+#        installCRDs: true
+#        rosa.region: us-east-2
+#        rosa.name: montreal
+#        aws.cloudwatch.roleArn: "arn:aws:iam::218444713402:role/montreal-RosaClusterWatch"
 
   destination:
     server: https://kubernetes.default.svc
