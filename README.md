@@ -52,11 +52,11 @@ export ROLE_ARN=$(aws cloudformation describe-stacks --stack-name rosa-idp-cw-lo
 
 ```shell
 cd rosa_idp
-find . -type f -not -path '*/\.git/*' -exec sed -i "s/open-sudo/${github_repo}/g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s/__AWS_ACCOUNT_ID__/${AWS_ACCOUNT_ID}/g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s/__OIDC_ENDPOINT__/${OIDC_ENDPOINT}/g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s/__REGION__/${REGION}/g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s/__CLUSTER_NAME__/${ROSA_CLUSTER_NAME}/g" {} +
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${github_repo}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|__CLUSTER_NAME__|${ROSA_CLUSTER_NAME}|g" {} +
 git add -A
 git commit -m "initial customization"
 git push
@@ -65,7 +65,6 @@ cd ..
 8) 
 
 ```shell
-oc apply -f credentials/cloudwatch-credentials.yaml
 oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
 # wait a couple of minutes...
