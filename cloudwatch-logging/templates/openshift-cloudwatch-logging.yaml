@@ -21,6 +21,7 @@ stringData:
   role_arn: {{ .Values.aws.cloudwatch.roleArn }}
 apiVersion: "logging.openshift.io/v1"
 ---
+apiVersion: "logging.openshift.io/v1"
 kind: ClusterLogForwarder
 metadata:
   name: instance
@@ -44,7 +45,6 @@ spec:
        outputRefs:
          - cw
 ---
-
 apiVersion: logging.openshift.io/v1
 kind: ClusterLogging
 metadata:
