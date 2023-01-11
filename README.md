@@ -18,7 +18,7 @@ export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text
 ```
 Be sure  you verify that all environment variables are set.
 
-4) Execute cloudformation scripsts to create the necessary role:
+4) Execute cloudformation scripts to create the necessary roles:
 
 ```shell
 aws cloudformation create-stack --template-body file://rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
