@@ -19,7 +19,7 @@ kind: Secret
 metadata:
   name: cloudwatch-credentials
   namespace: openshift-logging
-annotations:
+  annotations:
     argocd.argoproj.io/sync-wave: "5"
 
 stringData:
