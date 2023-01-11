@@ -6,7 +6,7 @@ metadata:
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: 
+    namespace: openshift-gitops
     server: https://kubernetes.default.svc
   project: default
   source:
@@ -20,8 +20,8 @@ spec:
           value: "218444713402"
         - name: aws.cloudwatch.roleArn
           value: "arn:aws:iam::218444713402:role/bombei-RosaClusterWatch"
-    path: argocd-umbrella-application
     repoURL: https://github.com/open-sudo/rosa-idp.git
+    path: argocd-umbrella-application
     targetRevision: HEAD
   syncPolicy:
     retry:
