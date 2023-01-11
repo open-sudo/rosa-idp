@@ -85,10 +85,10 @@ affinity: {}
 # Declare variables to be passed into your templates.
 
 rosa:
-  clusterName: bonaberi
+  clusterName: austria
   region: us-east-2
 
 
 aws:
   cloudwatch:
-     roleArn: "arn:aws:iam::218444713402:role/bonaberi-RosaClusterWatch"
+     roleArn: "arn:aws:iam::218444713402:role/austria-RosaClusterWatch"
