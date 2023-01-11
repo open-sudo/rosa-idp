@@ -3,6 +3,11 @@
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
 1) Clone the repo you just forked
 2) Log in into OpenShift on the CLI
+
+```shell
+oc login --token=sha256~BzDnS4mmRyi212RNtMasOlN0l9esXrK6W9hYMQJ1944 --server=https://api.lord-voldemort.msa7.p323.openshiftapps.com:6443
+```
+
 3) Set following environment variables:
 
 ```shell
@@ -11,18 +16,15 @@ export REGION=$(rosa describe cluster -c ${ROSA_CLUSTER_NAME} --output json | jq
 export OIDC_ENDPOINT=$(oc get authentication.config.openshift.io cluster -o json | jq -r .spec.serviceAccountIssuer | sed  's|^https://||')
 export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
 ```
-4) Verify that all environment variables are set:
+Be sure  you verify that all environment variables are set.
 
-```shell
-echo "Cluster: ${ROSA_CLUSTER_NAME}, Region: ${REGION}, OIDC Endpoint: ${OIDC_ENDPOINT}, AWS Account ID: ${AWS_ACCOUNT_ID}"
-```
-5) Execute cloudformation scripsts to create the necessary role:
+4) Execute cloudformation scripsts to create the necessary role:
 
 ```shell
 aws cloudformation create-stack --template-body file://rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
-6) Wait 2 or 3 min and retrieve the role ARN:
+5) Wait 2 or 3 min and retrieve the role ARN:
 
 ```shell
 aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs  --query 'Stacks[0].Outputs[0].OutputValue'
@@ -39,13 +41,13 @@ If, however the role is provided, insert it in an environment variable
 export ROLE_ARN=$(aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs  --query 'Stacks[0].Outputs[0].OutputValue')
 ```
 
-7) Set your github repo name as environment variable
+6) Set your github repo name as environment variable
 
 ```shell
   export github_repo=<your github repo name>
 ```
 
-8) 
+7) 
 
 ```shell
 cd rosa_idp
@@ -59,7 +61,7 @@ git commit -m "initial customization"
 git push
 cd ..
 ```
-7) 
+8) 
 
 ```shell
 oc apply -f credentials/cloudwatch-credentials.yaml
