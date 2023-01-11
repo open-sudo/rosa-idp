@@ -19,7 +19,7 @@ echo "Cluster: ${ROSA_CLUSTER_NAME}, Region: ${REGION}, OIDC Endpoint: ${OIDC_EN
 5) Execute cloudformation scripsts to create the necessary role:
 
 ```shell
-aws cloudformation create-stack --template-body file://../rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+aws cloudformation create-stack --template-body file://rosa-idp/cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${ROSA_CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
 6) Wait 2 or 3 min and retrieve the role ARN:
@@ -38,19 +38,14 @@ If, however the role is provided, insert it in an environment variable
 ```shell
 export ROLE_ARN=$(aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs  --query 'Stacks[0].Outputs[0].OutputValue')
 ```
-7) Create secrets
 
-```shell
-oc apply -f credentials/cloudwatch-credentials.yaml
-```
-
-6) Set your github repo name as environment variable
+7) Set your github repo name as environment variable
 
 ```shell
   export github_repo=<your github repo name>
 ```
 
-6) 
+8) 
 
 ```shell
 cd rosa_idp
@@ -67,6 +62,7 @@ cd ..
 7) 
 
 ```shell
+oc apply -f credentials/cloudwatch-credentials.yaml
 oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
 # wait a couple of minutes...
