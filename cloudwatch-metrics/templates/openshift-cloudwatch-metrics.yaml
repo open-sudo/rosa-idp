@@ -14,7 +14,7 @@ metadata:
   namespace: amazon-cloudwatch
 
 stringData:
-  role_arn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchMetrics"
+  credentials: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchMetrics"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
