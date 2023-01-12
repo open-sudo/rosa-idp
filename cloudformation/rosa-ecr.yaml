@@ -28,8 +28,5 @@ Resources:
          - "ManagedOpenShift-Worker-Role"
 
          
-Outputs:
-    RosaECRArn:
-        Value: !GetAtt RosaECRPolicy.Arn
       
 
