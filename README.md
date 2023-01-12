@@ -23,8 +23,7 @@ Be sure  you verify that all environment variables are set.
 ```shell
 cd rosa_idp
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT 
-ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
 ```
 
 5) Wait 2 or 3 min and retrieve the role ARN:
