@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 
 Resources:
-  CustomECRPolicy:
+  RosaECRPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -26,4 +26,10 @@ Resources:
             Resource: '*'
       Roles: 
          - "ManagedOpenShift-Worker-Role"
+
+         
+Outputs:
+    RosaECRArn:
+        Value: !GetAtt RosaECRPolicy.Arn
+      
 

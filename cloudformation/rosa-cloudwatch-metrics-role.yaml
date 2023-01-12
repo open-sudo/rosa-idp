@@ -19,7 +19,7 @@ Resources:
         - RosaClusterName: !Join
           - ''
           - - !Ref ClusterName
-            - '-RosaClusterWatchMetrics3'
+            - '-RosaClusterWatchMetrics'
       AssumeRolePolicyDocument: !Sub
         - |
           {
