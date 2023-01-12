@@ -10,17 +10,17 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: cloudwatch-logging
+    path: cloudwatch-metrics
     helm:
       values: |
         installCRDs: true
         rosa.region: __REGION__
         rosa.name: __CLUSTER_NAME__
-        aws.cloudwatch.roleArn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchLogging"
+        aws.cloudwatch.roleArn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchMetrics"
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: openshift-logging
+    namespace: amazon-cloudwatch
   syncPolicy:
     automated:
       prune: true

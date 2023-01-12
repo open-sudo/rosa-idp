@@ -23,7 +23,7 @@ metadata:
   namespace: openshift-logging
 
 stringData:
-  role_arn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatch"
+  role_arn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchLogging"
 ---
 apiVersion: "logging.openshift.io/v1"
 kind: ClusterLogForwarder

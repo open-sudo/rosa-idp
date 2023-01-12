@@ -1,0 +1,5 @@
+rosa:
+   region: __REGION__
+   clusterName: __CLUSTER_NAME__
+
+

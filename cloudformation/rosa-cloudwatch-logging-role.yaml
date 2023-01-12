@@ -22,7 +22,7 @@ Resources:
         - RosaClusterName: !Join
           - ''
           - - !Ref ClusterName
-            - '-RosaClusterWatch'
+            - '-RosaClusterWatchLogging'
       AssumeRolePolicyDocument: !Sub
         - |
           {

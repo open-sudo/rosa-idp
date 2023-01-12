@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+
+Parameters:
+  OidcProvider:
+    Type: String
+  AppNamespace:
+    Type: String
+    Default: "amazon-cloudwatch"
+  ClusterName:
+    Type: String
+
+Resources:
+  CloudWatchMetricsRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub
+        - ${RosaClusterName}
+        - RosaClusterName: !Join
+          - ''
+          - - !Ref ClusterName
+            - '-RosaClusterWatchMetrics3'
+      AssumeRolePolicyDocument: !Sub
+        - |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "${IamOidcProviderArn}"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity"
+                }
+            ]
+          }
+        - IamOidcProviderArn: !Join
+          - ''
+          - - 'arn:aws:iam::'
+            - !Ref AWS::AccountId
+            - ':oidc-provider/'
+            - !Ref OidcProvider
+          OidcProvider: !Ref OidcProvider
+          AppNamespace: !Ref AppNamespace
+
+      Path: "/"
+      ManagedPolicyArns:
+          - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+Outputs:
+    RosaCloudWatchMetricsRoleArn:
+        Value: !GetAtt CloudWatchMetricsRole.Arn
