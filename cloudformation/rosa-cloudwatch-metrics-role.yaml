@@ -46,6 +46,3 @@ Resources:
       Path: "/"
       ManagedPolicyArns:
           - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-Outputs:
-    RosaCloudWatchMetricsRoleArn:
-        Value: !GetAtt CloudWatchMetricsRole.Arn
