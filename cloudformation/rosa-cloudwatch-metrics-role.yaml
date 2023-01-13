@@ -46,3 +46,10 @@ Resources:
       Path: "/"
       ManagedPolicyArns:
           - "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+
+  RootInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: "CloudWatchMetricsRole"

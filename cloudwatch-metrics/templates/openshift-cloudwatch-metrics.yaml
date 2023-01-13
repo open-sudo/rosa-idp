@@ -7,14 +7,23 @@ metadata:
     name: amazon-cloudwatch
 
 ---
-apiVersion: v1
-kind: Secret
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
 metadata:
-  name: aws-credentials
   namespace: amazon-cloudwatch
-
-stringData:
-  credentials: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchMetrics"
+  name: aws-credentials
+spec:
+  refreshInterval: 1m
+  secretStoreRef:
+    name: global-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: aws-credentials
+    creationPolicy: Owner
+  dataFrom:
+  - extract:
+      key: aws-credentials
+      decodingStrategy: Base64
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
