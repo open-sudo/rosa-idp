@@ -1,24 +1,24 @@
 #!/bin/bash
 
-export current=`git config --get remote.origin.url`
-if [ -z "$current" ]; then
+export ORIGIN_URL=`git config --get remote.origin.url`
+if [ -z "$ORIGIN_URL" ]; then
   echo "Move into the github project root to launch this script."
   exit;
 fi
-echo "Current repo url is: $current"
-if [[ "$current" == *"open-sudo"* ]]; then
+echo "Current repo url is: $ORIGIN_URL"
+if [[ "$ORIGIN_URL" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
   exit;
 fi
 
-export GITHUB_BASE_URL=`dirname $current`
+export GITHUB_BASE_URL=`dirname $ORIGIN_URL`
 export GITHUB_NAME=`basename $GITHUB_BASE_URL`
 
 echo "GitHub name is: $GITHUB_NAME"
 
-if [ $# -eq 0 ]
+if [ -z $GITHUB_NAME ]
 then
-    echo "No arguments supplied; I was expecting your github name, such as open-sudo"
+    echo "Could not extract github user name"
     exit;
 fi
 status_code=$(curl --write-out '%{http_code}' --silent --output /dev/null https://github.com/$1)
