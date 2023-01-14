@@ -1,5 +1,20 @@
 #!/bin/bash
 
+export current=`git config --get remote.origin.url`
+if [ -z "$current" ]; then
+  echo "Move into the github project root to launch this script."
+  exit;
+fi
+echo "Current repo url is: $current"
+if [[ "$current" == *"open-sudo"* ]]; then
+  echo "You CANNOT apply these changes to open-sudo"
+  exit;
+fi
+
+export GITHUB_BASE_URL=`dirname $current`
+export GITHUB_NAME=`basename $GITHUB_BASE_URL`
+
+echo "GitHub name is: $GITHUB_NAME"
 
 if [ $# -eq 0 ]
 then
@@ -17,7 +32,7 @@ echo "https://github.com/$1 successfully validated"
 
 export OCP_TOKEN=`oc whoami --show-token`
 
-if [ -z "OCP_TOKEN" ]
+if [ -z "$OCP_TOKEN" ]
 then
     echo "No OpenShift token found. You might not be logged in."
     exit;
@@ -58,8 +73,14 @@ fi
 
 echo "AWS Account ID found: $AWS_ACCOUNT_ID"
 
+export current=`git config --get remote.origin.url`
+echo "Current repo url is: $current"
+if [[ "$current" == *"open-sudo"* ]]; then
+  echo "You CANNOT apply these changes to open-sudo"
+fi
 
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${github_repo}|g" {} +
+exit;
+find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
@@ -78,6 +99,6 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-e
 aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
      --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \ 
+aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials
 

@@ -1,8 +1,8 @@
 # rosa-idp
 
-##Prequisites:
-1) AWS CLI Tool is installed and configured with your key and secret
-2) OC CLID is installed
+## Prequisites:
+1) AWS CLI Tool is installed and configured with your access and secret keys
+2) OC CLI is installed
 
 ## Deployment
 
@@ -14,12 +14,12 @@
 
 ```shell
 cd rosa-idp
-./deploy.sh <your github repo name>
+./deploy.sh 
 ```
 
-5) Wait 3 min. Then, check the execution status in the cloudformation console: https://aws.amazon.com/cloudformation
+5) Wait 3 min. Then, check the execution status of cloudformation stacks in console: https://aws.amazon.com/cloudformation
 
-6) Push the modified code base to your repo
+6) Push the modified codebase to your github repo
 ```shell
 git add -A
 git commit -m "initial customization"
