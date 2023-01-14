@@ -1,31 +1,34 @@
 # rosa-idp
 
 ## Prequisites:
-1) AWS CLI Tool is installed and configured with your access and secret keys
-2) OC CLI is installed
+1) AWS CLI tool is installed and configured with access and secret keys
+2) OC CLI is installed and you are logged in into OpenShift
 
 ## Deployment
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
-2) At your command line, clone the repo you just forked
-3) Log in into OpenShift at the command line
+2) Using GIT CLI, clone the repo you just forked
 
-4) Execute the rosa-idp/deploy.sh script
+3) Execute the deployment script
 
 ```shell
 cd rosa-idp
 ./deploy.sh 
 ```
 
-5) Wait 3 min. Then, check the execution status of cloudformation stacks in console: https://aws.amazon.com/cloudformation
+4) Check the execution status of cloudformation stacks: rosa-idp-cw-logs, rosa-idp-iam-external-secrets, rosa-idp-ecr, rosa-idp-cw-metrics-credentials 
+ 
+```shell
+aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs
+```
 
-6) Push the modified codebase to your github repo
+5) Once all stacks are successfully executed, push the modified codebase to your github repo
 ```shell
 git add -A
 git commit -m "initial customization"
 git push
 ```
-7) Deploy all k8s and Helm objects
+6) Deploy all ArgoCD applications
 
 ```shell
 oc apply -f ./argocd/operator.yaml
