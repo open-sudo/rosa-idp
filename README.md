@@ -22,23 +22,11 @@ Be sure  you verify that all environment variables are set.
 
 ```shell
 cd rosa_idp
-aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
-aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr
-ws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials
+aws cloudformation create-stack --template-body file://cloudformation/rosa-idp-setup.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
-5) Wait 2 or 3 min and retrieve the role ARN:
+5) Wait 2 or 3 min and check the cloudformation console to confirm successful execution
 
-```shell
-aws cloudformation describe-stacks --stack-name <PUT STACK NAME HERE>  --query 'Stacks[0].Outputs[0].OutputValue'
-```
-
-If no role ARN is returned, check the status with:
-
-```shell
-aws cloudformation describe-stack-events --stack-name <PUT STACK NAME HERE>
-```
 
 6) Set your github repo name as environment variable
 
