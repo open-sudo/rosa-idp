@@ -4,9 +4,6 @@
 1) Clone the repo you just forked
 2) Log in into OpenShift on the CLI
 
-```shell
-oc login --token=sha256~BzDnS4mmRyi212RNtMasOlN0l9esXrK6W9hYMQJ1944 --server=https://api.lord-voldemort.msa7.p323.openshiftapps.com:6443
-```
 
 3) Set following environment variables:
 
@@ -21,8 +18,7 @@ Be sure  you verify that all environment variables are set.
 4) Execute cloudformation scripts to create the necessary roles:
 
 ```shell
-cd rosa_idp
-aws cloudformation create-stack --template-body file://cloudformation/rosa-idp-setup.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+aws cloudformation create-stack --template-body file://rosa_idp/cloudformation/rosa-idp-setup.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
 5) Wait 2 or 3 min and check the cloudformation console to confirm successful execution
