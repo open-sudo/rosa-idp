@@ -1,7 +1,7 @@
 # rosa-idp
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
-1) Clone the repo you just forked
+1) On your line of command, clone the repo you just forked
 2) Log in into OpenShift on the CLI
 
 
@@ -13,15 +13,14 @@ export REGION=$(rosa describe cluster -c ${CLUSTER_NAME} --output json | jq -r .
 export OIDC_ENDPOINT=$(oc get authentication.config.openshift.io cluster -o json | jq -r .spec.serviceAccountIssuer | sed  's|^https://||')
 export AWS_ACCOUNT_ID=`aws sts get-caller-identity --query Account --output text`
 ```
-Be sure  you verify that all environment variables are set.
 
-4) Execute cloudformation scripts to create the necessary roles:
+4) Execute cloudformation stack to create the necessary roles and credentials:
 
 ```shell
 aws cloudformation create-stack --template-body file://rosa_idp/cloudformation/rosa-idp-setup.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 ```
 
-5) Wait 2 or 3 min and check the cloudformation console to confirm successful execution
+5) Wait 3 min and check the cloudformation console to confirm successful execution of the cloudformation stack
 
 
 6) Set your github repo name as environment variable
