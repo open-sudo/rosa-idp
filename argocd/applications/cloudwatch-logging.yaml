@@ -28,7 +28,8 @@ spec:
     syncOptions:
     - CreateNamespace=true
     - RespectIgnoreDifferences=true
-    - ApplyOutOfSyncOnly=true    
+    - Replace=true
+    - ServerSideApply=true
     retry:
       backoff:
         duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
