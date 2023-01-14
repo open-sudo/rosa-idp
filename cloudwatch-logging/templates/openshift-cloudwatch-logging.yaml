@@ -15,12 +15,13 @@ spec:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ---
----
 apiVersion: v1
 kind: Secret
 metadata:
   name: cloudwatch-credentials
   namespace: openshift-logging
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 
 stringData:
   role_arn: "arn:aws:iam::__AWS_ACCOUNT_ID__:role/__CLUSTER_NAME__-RosaClusterWatchLogging"
