@@ -1,22 +1,20 @@
 # rosa-idp
 
+##Prequisites:
+1) AWS CLI Tool is installed and configured with your key and secret
+2) OC CLID is installed
+
+## Deployment
+
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
-1) On your line of command, clone the repo you just forked
-2) Log in into OpenShift to obtain the login URL. Add this URL to rosa_idp/personalize.sh
+2) At your command line, clone the repo you just forked
+3) Log in into OpenShift at the command line
 
-
-3) Execute the rosa-idp/personalize.sh
+4) Execute the rosa-idp/deploy.sh script
 
 ```shell
 cd rosa-idp
-./personalize.sh <your github repo name>
-```
-
-
-3) Execute the cloudformation stack to create the necessary roles and credentials:
-
-```shell
-aws cloudformation create-stack --template-body file://cloudformation/rosa-idp-setup.yaml --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+./deploy.sh <your github repo name>
 ```
 
 5) Wait 3 min. Then, check the execution status in the cloudformation console: https://aws.amazon.com/cloudformation
@@ -27,7 +25,7 @@ git add -A
 git commit -m "initial customization"
 git push
 ```
-8) Deploy all K8S and Helm objects
+7) Deploy all k8s and Helm objects
 
 ```shell
 oc apply -f ./argocd/operator.yaml
