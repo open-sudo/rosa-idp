@@ -7,6 +7,9 @@ subjects:
     name: openshift-gitops-argocd-application-controller
     namespace: openshift-gitops
   - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: amazon-cloudwatch
+  - kind: ServiceAccount
     name: openshift-gitops-applicationset-controller
     namespace: openshift-gitops
   - kind: ServiceAccount
