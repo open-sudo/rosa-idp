@@ -72,13 +72,6 @@ Resources:
       Roles:
         - Ref: "CloudWatchRole"
              
-  RootInstanceProfile:
-    Type: "AWS::IAM::InstanceProfile"
-    Properties:
-      Path: "/"
-      Roles:
-        - Ref: "CloudWatchRole"
-            
           
 Outputs:
     RosaCloudWatchRoleArn:
