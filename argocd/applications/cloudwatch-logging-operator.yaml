@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudwatch-logging-operator
+  namespace: openshift-gitops
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io  
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kubecutle/rosa-idp.git
+    targetRevision: HEAD
+    path: cloudwatch-logging-operator
+    helm:
+      values: |
+        installCRDs: true
+        rosa.region: us-east-2
+        rosa.name: minou
+        aws.cloudwatch.roleArn: "arn:aws:iam::821119371684:role/minou-RosaClusterWatchLogging"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+    - Replace=true
+    - ServerSideApply=true
+    retry:
+      limit: 100
+      backoff:
+        duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+        factor: 2 # a factor to multiply the base duration after each failed retry
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy 
