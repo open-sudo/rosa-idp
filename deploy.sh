@@ -28,7 +28,7 @@ if [[ "$status_code" -ne 200 ]] ; then
   exit 0
 fi
 
-echo "https://github.com/$1 successfully validated"
+echo "https://github.com/${GITHUB_NAME} successfully validated"
 
 export OCP_TOKEN=`oc whoami --show-token`
 

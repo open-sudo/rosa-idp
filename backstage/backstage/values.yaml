@@ -1,0 +1,98 @@
+# Default values for backstage.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/raf-backstage-demo/backstage-app-demo
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: main
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  runAsUser: 0
+
+service:
+  type: ClusterIP
+  port: 7000
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgresql:
+  tls:
+    enabled: true
+    certificatesSecret: postgresql-tls-secret
+    certFilename: "tls.crt"
+    certKeyFilename: "tls.key"
+  auth:
+    postgresPassword: changeit
+    #existingSecret: postgresql-admin-password
+  
+  primary:
+    extraEnvVars:
+      - name: POSTGRESQL_WAL_LEVEL
+        value: logical  
+    service:
+        annotations:
+          service.beta.openshift.io/serving-cert-secret-name: postgresql-tls-secret         
+  postgresqlSharedPreloadLibraries: pgaudit,decoderbufs
+  volumePermissions:
+    enabled: true
+    securityContext:
+      runAsUser: "auto"
+  securityContext:
+    enabled: false
+  containerSecurityContext:
+    enabled: false
+  shmVolume: 
+    chmod:
+      enabled: false  
+
+usePostgresql: false          
