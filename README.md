@@ -19,7 +19,7 @@ cd rosa-idp
 4) Check the execution status of cloudformation stacks: rosa-idp-cw-logs, rosa-idp-iam-external-secrets, rosa-idp-ecr, rosa-idp-cw-metrics-credentials 
  
 ```shell
-aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs
+watch -n 5 aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs
 ```
 
 5) Once all stacks are successfully executed, push the modified codebase to your github repo
@@ -33,7 +33,7 @@ git push
 ```shell
 oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
-# wait a couple of minutes...
+# Wait  5  minutes...
 oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```

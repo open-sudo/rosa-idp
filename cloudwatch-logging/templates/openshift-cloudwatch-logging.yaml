@@ -12,7 +12,7 @@ stringData:
 apiVersion: "logging.openshift.io/v1"
 kind: ClusterLogForwarder
 metadata:
-  name: cluster-log-forwarder
+  name: instance
   namespace: openshift-logging
   annotations:
     argocd.argoproj.io/sync-wave: "7"
@@ -39,7 +39,7 @@ spec:
 apiVersion: logging.openshift.io/v1
 kind: ClusterLogging
 metadata:
-  name: cluster-logging-instance
+  name: instance
   namespace: openshift-logging
   annotations:
     argocd.argoproj.io/sync-wave: "10"

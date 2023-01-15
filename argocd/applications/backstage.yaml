@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/raffaelespazzoli/backstage-demo.git
+    repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: backstage/backstage
+    path: backstage
     helm:
       values: | 
         base_domain: "dummy"
