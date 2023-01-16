@@ -3,10 +3,15 @@
 ## Prequisites:
 1) AWS CLI tool is installed and configured with access and secret keys
 2) OC CLI is installed and you are logged in into OpenShift
+3) GIT CLI is installed and you are logged in into Git
 
 ## Deployment
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
+```shell
+git clone https://github.com/open-sudo/rosa-idp.git
+```
+
 2) Using GIT CLI, clone the repo you just forked
 
 3) Execute the deployment script
@@ -16,13 +21,13 @@ cd rosa-idp
 ./deploy.sh 
 ```
 
-4) Check the execution status of cloudformation stacks: rosa-idp-cw-logs, rosa-idp-iam-external-secrets, rosa-idp-ecr, rosa-idp-cw-metrics-credentials 
+4) Wait 2 min and check the execution status of cloudformation stacks
  
 ```shell
-watch -n 5 aws cloudformation describe-stacks --stack-name rosa-idp-cw-logs
+aws cloudformation list-stacks | grep -E StackStatus\|StackName | head -n 8
 ```
 
-5) Once all stacks are successfully executed, push the modified codebase to your github repo
+5) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
 ```shell
 git add -A
 git commit -m "initial customization"
