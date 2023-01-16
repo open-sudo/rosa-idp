@@ -9,7 +9,7 @@
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
 
-2) Using GIT CLI, clone the repo you just forked
+2) Clone the repo you just forked
 ```shell
 git clone https://github.com/open-sudo/rosa-idp.git
 ```
@@ -33,7 +33,7 @@ git add -A
 git commit -m "initial customization"
 git push
 ```
-6) Deploy all ArgoCD applications
+6) Deploy all resources
 
 ```shell
 oc apply -f ./argocd/operator.yaml
