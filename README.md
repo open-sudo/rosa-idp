@@ -46,6 +46,19 @@ oc apply -f ./argocd/root-application.yaml
 ## Validation
 Use following steps to validate your cluster deployment.
 
+### ArgoCD
+Your ArgoCD is running at: https://openshift-gitops-server-openshift-gitops.YOUR-ROSA-CLUSTER-URL.com/. In my case, the URL was: https://openshift-gitops-server-openshift-gitops.apps.jazz.a4ps.p1.openshiftapps.com/.
+Log in with the OpenShift Login option  and validate that all tasks are green: completely synched and completely healthy.
+
+### Cloudformation
+Validate that all stacks have been executed successfully.
+
+```shell
+aws cloudformation list-stacks | head -40
+```
+Feel free to log into the cloudformation console and explore the 4 tasks that where created.
+
+
 ### Cloudwatch Logs
 
 Validate log streams have been created in Cloudwatch for your cluster
@@ -75,6 +88,10 @@ Following result is expected with status SecretSynced and readiness set to True
 ````{verbatim}
 NAME                                  STORE                                  REFRESH INTERVAL   STATUS         READY
 rosa-cloudwatch-metrics-credentials   rosa-cloudwatch-metrics-secret-store   1m                 SecretSynced   True
-```
+````
+Validate that the external secret was converted into a secret called aws-credentials.
 
+```shell
+oc get secret aws-credentials
+```
 
