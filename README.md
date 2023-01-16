@@ -65,7 +65,7 @@ You should see the result:
 ````{verbatim}
 NAME                                   AGE     STATUS   CAPABILITIES   READY
 rosa-cloudwatch-metrics-secret-store   4m36s   Valid    ReadWrite      True
-```
+````
 
 The following command shows further success:
 ```shell
