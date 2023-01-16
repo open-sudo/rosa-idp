@@ -42,3 +42,39 @@ oc apply -f ./argocd/rbac.yaml
 oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```
+
+## Validation
+Use following steps to validate your cluster deployment.
+
+### Cloudwatch Logs
+
+Validate log streams have been created in Cloudwatch for your cluster
+```shell
+aws logs describe-log-groups --log-group-name-prefix rosa-${CLUSTER_NAME}
+```
+
+### External secrets
+Validate that an external secret was created to allow sending of metrics to Cloudwatch.
+
+```shell
+ oc get secretstore -n amazon-cloudwatch
+```
+
+You should see the result:
+
+````{verbatim}
+NAME                                   AGE     STATUS   CAPABILITIES   READY
+rosa-cloudwatch-metrics-secret-store   4m36s   Valid    ReadWrite      True
+```
+
+The following command shows further success:
+```shell
+oc get externalsecret rosa-cloudwatch-metrics-credentials -n amazon-cloudwatch
+```
+Following result is expected with status SecretSynced and readiness set to True
+````{verbatim}
+NAME                                  STORE                                  REFRESH INTERVAL   STATUS         READY
+rosa-cloudwatch-metrics-credentials   rosa-cloudwatch-metrics-secret-store   1m                 SecretSynced   True
+```
+
+
