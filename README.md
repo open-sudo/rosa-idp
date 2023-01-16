@@ -1,18 +1,18 @@
 # rosa-idp
 
 ## Prequisites:
-1) AWS CLI tool is installed and configured with access and secret keys
+1) AWS CLI is installed and configured with access and secret keys
 2) OC CLI is installed and you are logged in into OpenShift
 3) GIT CLI is installed and you are logged in into Git
 
 ## Deployment
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
+
+2) Using GIT CLI, clone the repo you just forked
 ```shell
 git clone https://github.com/open-sudo/rosa-idp.git
 ```
-
-2) Using GIT CLI, clone the repo you just forked
 
 3) Execute the deployment script
 
