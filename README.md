@@ -11,7 +11,7 @@
 
 2) Clone the repo you just forked
 ```shell
-git clone https://github.com/open-sudo/rosa-idp.git
+git clone https://github.com/<YOUR GIT USER NAME>/rosa-idp.git
 ```
 
 3) Execute the deployment script
