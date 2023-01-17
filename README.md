@@ -1,11 +1,11 @@
 # rosa-idp
 
-## Prequisites:
+# Prequisites:
 1) AWS CLI is installed and configured with access and secret keys
 2) OC CLI is installed and you are logged in into OpenShift
 3) GIT CLI is installed and you are logged in into Git
 
-## Deployment
+# Deployment
 
 1) Fork the following repo https://github.com/open-sudo/rosa-idp.git to your github repo.
 
@@ -43,7 +43,7 @@ oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```
 
-## Validation
+# Validation
 Use following steps to validate your cluster deployment.
 
 ### ArgoCD
