@@ -109,3 +109,24 @@ amazon-cloudwatch. The policy that gives permission to this service account is r
 ExternalSecretCloudwatchCredentials. Open it and review its content.
 
 
+### Camel-K
+To test the camel-k deployment, download the <a href="https://downloads.apache.org/camel/camel-k/1.8.2/">Camel-K CLI</a> that matches your operating system. Create a file called Hello.grovy with following content:
+It is important for the client's version number to match the operator's version number.
+````{verbatim}
+from("platform-http:/")
+   .setBody(constant("Hello from CamelK!"));
+````
+At the CLI, run the following commands:
+
+```shell
+oc new-project camel-examples
+kamel run Hello.groovy
+```
+This will deploy your route. To check its status, execute following commands:
+```shell
+kamel get hello
+oc get routes
+```
+
+Once you get a route, invoke it using curl. Be sure to use http instead of https.
+
