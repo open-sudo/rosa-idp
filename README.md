@@ -47,16 +47,15 @@ oc apply -f ./argocd/root-application.yaml
 Use following steps to validate your cluster deployment.
 
 ### ArgoCD
-Your ArgoCD is running at: https://openshift-gitops-server-openshift-gitops.YOUR-ROSA-CLUSTER-URL.com/. In my case, the URL was: https://openshift-gitops-server-openshift-gitops.apps.jazz.a4ps.p1.openshiftapps.com/.
-Log in with the OpenShift Login option  and validate that all tasks are green: completely synched and completely healthy.
+ArgoCD is running at: https://openshift-gitops-server-openshift-gitops.YOUR-ROSA-CLUSTER-URL.com/. Log in with the OpenShift Login option and validate that all tasks are synched and  healthy.
 
 ### Cloudformation
-Validate that all stacks have been executed successfully.
+Validate that all stacks were executed successfully.
 
 ```shell
 aws cloudformation list-stacks | head -40
 ```
-Feel free to log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the 4 tasks that where created.
+Log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the 4 tasks that where created.
 
 
 ### Cloudwatch Logs
@@ -96,15 +95,15 @@ oc get secret aws-credentials
 ```
 
 ### AWS Secret Manager
-Credentials used your cluster are all kept in <a href="https://aws.amazon.com/secretsmanager">AWS Secret Manager</a>. Login into it, and validate that you can see an entry called: 
-rosa-cloudwatch-metrics-credentials. Retrieve its value and apply a base64 decoder to it. The result should be of the form:
+Credentials used in your cluster are all kept in <a href="https://aws.amazon.com/secretsmanager">AWS Secret Manager</a>. Login into this secret manager, and validate that you can see an entry called: 
+rosa-cloudwatch-metrics-credentials. Retrieve its value and apply a <a href="https://www.base64decode.org/">base64 decoder</a> to it. The result should be of the form:
 ````{verbatim}
 [AmazonCloudWatchAgent]
 aws_access_key_id = AKIAIOSFODNN7EXAMPLE
 aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ````
 
-Compare this value to aws-credentials mentioned above. They should be identical. These credentials are accessible only to one service account (called iam-external-secrets-sa) running within the project called 
+Compare this value to aws-credentials mentioned above. They should be identical. These credentials are accessible only the service account named iam-external-secrets-sa that runs within the project called 
 amazon-cloudwatch. The policy that gives permission to this service account is registered in AWS IAM. Look for the role called <YOUR CLUSTER NAME>-RosaClusterSecrets. It should have a policy called 
 ExternalSecretCloudwatchCredentials. Open it and review its content.
 
@@ -130,3 +129,18 @@ oc get routes
 
 Once you get a route, invoke it using curl. Be sure to use http instead of https.
 
+### Cloudwatch Metrics
+Download the <a href="https://raw.githubusercontent.com/rh-mobb/documentation/main/content/docs/rosa/metrics-to-cloudwatch-agent/dashboard.json">dashboard json file</a>. Customize it with following commands:
+
+```shell
+sed -i 's/__CLUSTER_NAME__/$YOUR_CLUSTER_NAME/g' dashboard.json 
+sed -i 's/__CLUSTER_REGION__/$YOUR_CLUSTER_REGION/g' dashboard.json 
+```
+
+Use following command to create a dashboard in Cloudwatch:
+
+```shell
+aws cloudwatch put-dashboard --dashboard-name "ROSA Metrics Dashboard" --dashboard-body file://dashboard.json
+```
+
+Finally, log into <a href="aws.amazon.com/cloudwatch">Cloudwatch</a> to review your dashboard and your cluster metrics.
