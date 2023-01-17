@@ -56,7 +56,7 @@ Validate that all stacks have been executed successfully.
 ```shell
 aws cloudformation list-stacks | head -40
 ```
-Feel free to log into the cloudformation console and explore the 4 tasks that where created.
+Feel free to log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the 4 tasks that where created.
 
 
 ### Cloudwatch Logs
@@ -94,4 +94,18 @@ Validate that the external secret was converted into a secret called aws-credent
 ```shell
 oc get secret aws-credentials
 ```
+
+### AWS Secret Manager
+Credentials used your cluster are all kept in <a href="https://aws.amazon.com/secretsmanager">AWS Secret Manager</a>. Login into it, and validate that you can see an entry called: 
+rosa-cloudwatch-metrics-credentials. Retrieve its value and apply a base64 decoder to it. The result should be of the form:
+````{verbatim}
+[AmazonCloudWatchAgent]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+````
+
+Compare this value to aws-credentials mentioned above. They should be identical. These credentials are accessible only to one service account (called iam-external-secrets-sa) running within the project called 
+amazon-cloudwatch. The policy that gives permission to this service account is registered in AWS IAM. Look for the role called <YOUR CLUSTER NAME>-RosaClusterSecrets. It should have a policy called 
+ExternalSecretCloudwatchCredentials. Open it and review its content.
+
 
