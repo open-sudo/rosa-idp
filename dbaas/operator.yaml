@@ -10,7 +10,7 @@ spec:
   name: dbaas-operator
   source: dbaas-operator
   sourceNamespace: openshift-marketplace
-  startingCSV: dbaas-operator.v0.2.0
+#  startingCSV: dbaas-operator.v0.2.0
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
