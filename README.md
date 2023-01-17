@@ -44,10 +44,14 @@ oc apply -f ./argocd/root-application.yaml
 ```
 
 # Validation
-Use following steps to validate your cluster deployment.
+Use following steps to validate your  deployment.
 
 ### ArgoCD
-ArgoCD is running at: https://openshift-gitops-server-openshift-gitops.YOUR-ROSA-CLUSTER-URL.com/. Log in with the OpenShift Login option and validate that all tasks are synched and  healthy.
+Get your ArgoCD URL:
+```shell
+oc get route -n openshift-gitops
+```
+Log in into ArgoCD by selecting "Login via OpenShift". Validate that all tasks are synched and  healthy.
 
 ### Cloudformation
 Validate that all stacks were executed successfully.
@@ -55,7 +59,8 @@ Validate that all stacks were executed successfully.
 ```shell
 aws cloudformation list-stacks | head -40
 ```
-Log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the 4 tasks that where created.
+Log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the last 4 stacks that where created. Also review resources that were created by the stacks: roles, 
+credentials, policies, etc.
 
 
 ### Cloudwatch Logs
