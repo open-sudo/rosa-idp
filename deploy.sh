@@ -114,3 +114,13 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-e
       ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds
 
 
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-controller-role.yaml \
+    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds-ack
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-controller-credentials.yaml \
+    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-controller-ack
+
+
