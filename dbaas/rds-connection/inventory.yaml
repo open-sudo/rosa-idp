@@ -4,10 +4,10 @@ metadata:
   labels:
     related-to: dbaas-operator
     type: dbaas-vendor-service
-  name: backstage-demo
+  name: rds-shared-inventory
   namespace: openshift-dbaas-operator
 spec:
   credentialsRef:
-    name: cockroachdb-admin
+    name: rosa-rds-iventory-credentials
   providerRef:
-    name: cockroachdb-cloud-registration
+    name: rds-registration

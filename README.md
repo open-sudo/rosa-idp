@@ -49,9 +49,9 @@ Use following steps to validate your  deployment.
 ### ArgoCD
 Get your ArgoCD URL:
 ```shell
-oc get route -n openshift-gitops
+oc get routes  openshift-gitops-server -n openshift-gitops
 ```
-Log in into ArgoCD by selecting "Login via OpenShift". Validate that all tasks are synched and  healthy.
+Log in into ArgoCD by selecting "Log in via OpenShift". Validate that all tasks are synched and  healthy.
 
 ### Cloudformation
 Validate that all stacks were executed successfully.
