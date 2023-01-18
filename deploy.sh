@@ -101,3 +101,16 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.y
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials
 
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
+  
+aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
+  
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
+    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds
+
+

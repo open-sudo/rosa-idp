@@ -24,7 +24,7 @@ cd rosa-idp
 4) Wait 2 min and check the execution status of cloudformation stacks
  
 ```shell
-aws cloudformation list-stacks | grep -E StackStatus\|StackName | head -n 8
+aws cloudformation list-stacks | grep -E StackStatus\|StackName | head -n 14
 ```
 
 5) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
@@ -57,7 +57,7 @@ Log in into ArgoCD by selecting "Log in via OpenShift". Validate that all tasks 
 Validate that all stacks were executed successfully.
 
 ```shell
-aws cloudformation list-stacks | head -40
+aws cloudformation list-stacks | head -70
 ```
 Log into the <a href="https://aws.amazon.com/cloudformation">cloudformation console</a> and explore the last 4 stacks that where created. Also review resources that were created by the stacks: roles, 
 credentials, policies, etc.
