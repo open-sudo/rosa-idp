@@ -13,6 +13,9 @@ subjects:
     name: openshift-gitops-argocd-application-controller
     namespace: openshift-dbaas-operator
   - kind: ServiceAccount
+    name: openshift-gitops-argocd-application-controller
+    namespace: ack-system
+  - kind: ServiceAccount
     name: openshift-gitops-applicationset-controller
     namespace: openshift-gitops
   - kind: ServiceAccount

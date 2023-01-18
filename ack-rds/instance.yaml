@@ -1,0 +1,15 @@
+apiVersion: rds.services.k8s.aws/v1alpha1
+kind: DBInstance
+metadata:
+  finalizers:
+    - finalizers.rds.services.k8s.aws/DBInstance
+  name: rds-postgres-shared-instance
+  namespace: ack-system
+spec:
+  dbInstanceClass: db.m4.large
+  dbInstanceIdentifier: rds-postgres-shared-instance
+  engine: postgres
+  masterUsername: rds-shared-instance-master-user
+  masterUserPassword:
+    name: rosa-rds-shared-instance-credentials
+    key: password
