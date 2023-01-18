@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dbaas-operator
+  name: rds-connections
   namespace: openshift-gitops
   finalizers:
   - resources-finalizer.argocd.argoproj.io
