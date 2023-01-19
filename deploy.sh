@@ -90,37 +90,35 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-cloud
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
          ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
-     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr
-
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials
 
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
-  
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
-  
+aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
+     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr
+
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
       ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds
 
 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-controller-role.yaml \
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds-ack
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-controller-credentials.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-controller-ack
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
+
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
+  
+  
+
+
+
+
 
 
