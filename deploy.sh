@@ -79,12 +79,14 @@ if [[ "$current" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
 fi
 
+deploy=`cat ./deploy.sh`
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
 find . -type f -not -path '*/\.git/*' -exec sed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
 
+echo "$deploy" > deploy.sh
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
