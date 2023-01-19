@@ -6,10 +6,14 @@ metadata:
   name: rds-postgres-shared-instance
   namespace: openshift-dbaas-operator
 spec:
-  dbInstanceClass: db.m4.large
+  dbInstanceClass: db.t3.micro
   dbInstanceIdentifier: rds-postgres-shared-instance
   engine: postgres
-  masterUsername: rds-shared-instance-master-user
+  masterUsername: postgres
   masterUserPassword:
     name: rosa-rds-shared-instance-credentials
     key: password
+    namespace: openshift-dbaas-operator
+  publiclyAccessible: true
+  allocatedStorage: 20
+
