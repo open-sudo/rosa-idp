@@ -138,14 +138,14 @@ Once you get a route, invoke it using curl. Be sure to use http instead of https
 Download the <a href="https://raw.githubusercontent.com/rh-mobb/documentation/main/content/docs/rosa/metrics-to-cloudwatch-agent/dashboard.json">dashboard json file</a>. Customize it with following commands:
 
 ```shell
-sed -i 's/__CLUSTER_NAME__/$YOUR_CLUSTER_NAME/g' dashboard.json 
-sed -i 's/__CLUSTER_REGION__/$YOUR_CLUSTER_REGION/g' dashboard.json 
+sed -i "s/__CLUSTER_NAME__/$YOUR_CLUSTER_NAME/g" dashboard.json 
+sed -i "s/__REGION_NAME__/$YOUR_CLUSTER_REGION/g" dashboard.json 
 ```
 
 Use following command to create a dashboard in Cloudwatch:
 
 ```shell
-aws cloudwatch put-dashboard --dashboard-name "ROSA Metrics Dashboard" --dashboard-body file://dashboard.json
+aws cloudwatch put-dashboard --dashboard-name "ROSAMetricsDashboard" --dashboard-body file://dashboard.json
 ```
 
 Finally, log into <a href="aws.amazon.com/cloudwatch">Cloudwatch</a> to review your dashboard and your cluster metrics.

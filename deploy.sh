@@ -79,12 +79,18 @@ if [[ "$current" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
 fi
 
+export SED=sed
+export GSED=`which gsed`
+if [ ! -z "GSED" ]; then
+   echo "gsed found. using it instead of sed"
+   SED=$GSED
+fi
 deploy=`cat ./deploy.sh`
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
-find . -type f -not -path '*/\.git/*' -exec sed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec $SED -i "s|open-sudo|${GITHUB_NAME}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec $SED -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec $SED -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec $SED -i "s|__REGION__|${REGION}|g" {} +
+find . -type f -not -path '*/\.git/*' -exec $SED -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
 
 echo "$deploy" > deploy.sh
 
