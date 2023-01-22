@@ -31,7 +31,7 @@ git push
 ```shell
 oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
-# Wait  5  minutes...
+oc get route  openshift-gitops-server -n openshift-gitops # wait until this command returns a route
 oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```

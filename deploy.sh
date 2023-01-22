@@ -146,7 +146,7 @@ echo -e "Commiting changes to $ORIGIN_URL\n"
 git add -A
 git commit -m "Initial commit"
 
-echo -e "Please execute following command next: \n           git push"
+echo -e "Please execute following command next:       git push"
 
 
      
