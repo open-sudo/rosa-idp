@@ -21,19 +21,14 @@ cd rosa-idp
 ./deploy.sh 
 ```
 
-4) Wait 2 min and check the execution status of cloudformation stacks
- 
-```shell
-aws cloudformation list-stacks | grep -E StackStatus\|StackName | head -n 14
-```
 
-5) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
+4) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
 ```shell
 git add -A
 git commit -m "initial customization"
 git push
 ```
-6) Deploy all resources
+5) Deploy all resources
 
 ```shell
 oc apply -f ./argocd/operator.yaml

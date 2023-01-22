@@ -99,34 +99,45 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-cloud
          ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials
-
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials 
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
-     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr
-
+     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr 
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds
-
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds 
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets
-
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets 
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
 
-
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
   
-  
+STACK_NAMES=("rosa-idp-cw-logs" "rosa-idp-rds-inventory-credentials" "rosa-idp-rds-shared-instance-credentials" "rosa-idp-iam-external-secrets" 
+"rosa-idp-iam-external-secrets-rds" "rosa-idp-ecr" "rosa-idp-cw-metrics-credentials")
 
+export StackResultStatus="CREATE_IN_PROGRESS"
 
-
+for stack in ${!STACK_NAMES[@]}
+do
+        STACK_NAME="${STACK_NAMES[stack]}"
+        while [ $StackResultStatus == "CREATE_IN_PROGRESS" ]
+        do
+                sleep 5
+                StackResult=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}`
+                StackResultStatus=`echo $StackResult  | jq -r '.Stacks[0].StackStatus'`
+                echo "Status: ${STACK_NAME} : $StackResultStatus"
+        done
+        if [[ "$StackResultStatus" != *"CREATE_COMPLETE"* ]]; then
+                echo -e "Problems executing stack: $STACK_NAME. Find out more with:\n\n      aws cloudformation describe-stack-events --stack-name $STACK_NAME \n\n";
+                exit;
+        fi
+done
 
 
 
