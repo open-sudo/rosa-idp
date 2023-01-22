@@ -121,23 +121,33 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-i
 STACK_NAMES=("rosa-idp-cw-logs" "rosa-idp-rds-inventory-credentials" "rosa-idp-rds-shared-instance-credentials" "rosa-idp-iam-external-secrets" 
 "rosa-idp-iam-external-secrets-rds" "rosa-idp-ecr" "rosa-idp-cw-metrics-credentials")
 
-export StackResultStatus="CREATE_IN_PROGRESS"
+echo "===========================CloudFormation Status==========================="
 
 for stack in ${!STACK_NAMES[@]}
 do
         STACK_NAME="${STACK_NAMES[stack]}"
+        StackResultStatus="CREATE_IN_PROGRESS"
+
         while [ $StackResultStatus == "CREATE_IN_PROGRESS" ]
         do
                 sleep 5
                 StackResult=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}`
                 StackResultStatus=`echo $StackResult  | jq -r '.Stacks[0].StackStatus'`
-                echo "Status: ${STACK_NAME} : $StackResultStatus"
+                echo "${STACK_NAME} : $StackResultStatus"
         done
+        echo -e "\n"
         if [[ "$StackResultStatus" != *"CREATE_COMPLETE"* ]]; then
                 echo -e "Problems executing stack: $STACK_NAME. Find out more with:\n\n      aws cloudformation describe-stack-events --stack-name $STACK_NAME \n\n";
                 exit;
         fi
 done
 
+echo -e "Commiting changes to $ORIGIN_URL\n"
+git add -A
+git commit -m "Initial commit"
 
+echo -e "Please execute following command next: \n           git push"
+
+
+     
 

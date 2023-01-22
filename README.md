@@ -24,8 +24,6 @@ cd rosa-idp
 
 4) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
 ```shell
-git add -A
-git commit -m "initial customization"
 git push
 ```
 5) Deploy all resources
