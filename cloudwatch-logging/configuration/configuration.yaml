@@ -23,8 +23,8 @@ spec:
       type: cloudwatch
       cloudwatch:
         groupBy: namespaceName
-        groupPrefix: rosa-{{ .Values.rosa.clusterName }}
-        region: {{ .Values.rosa.region }}
+        groupPrefix: rosa-__CLUSTER_NAME__
+        region: __REGION__
       secret:
         name: cloudwatch-credentials
   pipelines:

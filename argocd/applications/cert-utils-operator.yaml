@@ -12,7 +12,8 @@ spec:
     targetRevision: HEAD
     path: cert-utils-operator
     directory:
-      include: operator.yaml
+      recurse: true
+      include: *.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-utils-operator

@@ -12,7 +12,8 @@ spec:
     targetRevision: HEAD
     path: namespace-configuration-operator
     directory:
-      include: operator.yaml
+      recurse: true
+      include: *.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: namespace-configuration-operator

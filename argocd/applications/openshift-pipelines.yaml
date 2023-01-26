@@ -12,7 +12,8 @@ spec:
     targetRevision: HEAD
     path: openshift-pipelines
     directory:
-      include: operator.yaml
+      recurse: true
+      include: *.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-operators
