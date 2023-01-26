@@ -1,0 +1,25 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: Patch
+metadata:
+  name: gitlab2
+  namespace: openshift-config
+spec:
+  serviceAccountRef:
+    name: default
+  patches:
+    gitlab-ocp-oauth-provider:
+      targetObjectRef:
+        apiVersion: config.openshift.io/v1
+        kind: OAuth
+        name: cluster
+      patchTemplate: |
+        {{ "{{-" }} $backStageDemoIDP:= dict "name" "gitlab" "mappingMethod" "claim" "type" "GitLab" "gitlab" (dict "clientID" "f3d0a18ecf3675808714b7e2184cea79869e578a6e854504a70da96529f7cccd" "clientSecret" (dict "name" "idp-client-secret-21ffqvbrs21e1jlvtef1b5dbrq76cihm")  {{ "-}}" }}
+        spec:
+          identityProviders:
+          {{ "{{-" }} if (not (has $backStageDemoIDP (index . 0).spec.identityProviders)) {{ "}}" }}
+        {{ "{{" }} append (index . 0).spec.identityProviders $backStageDemoIDP | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} else {{ "}}" }}
+        {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} end {{ "}}" }}            
+      patchType: application/merge-patch+json
+
