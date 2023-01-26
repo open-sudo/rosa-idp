@@ -13,7 +13,7 @@ spec:
     path: cert-utils-operator
     directory:
       recurse: true
-      include: *.yaml
+      include: '*.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-utils-operator

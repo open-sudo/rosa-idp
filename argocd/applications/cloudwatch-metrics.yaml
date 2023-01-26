@@ -13,7 +13,7 @@ spec:
     path: cloudwatch-metrics
     directory:
       recurse: true
-      include: *.yaml
+      include: '*.yaml'
 
   destination:
     server: https://kubernetes.default.svc

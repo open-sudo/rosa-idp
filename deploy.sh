@@ -80,7 +80,7 @@ if [[ "$current" == *"open-sudo"* ]]; then
 fi
 
 export GSED=`which gsed`
-if [ ! -z "GSED" ]; then
+if [ ! -z "$GSED" ]; then
    echo "gsed found. using it instead of sed"
    find . -type f -not -path '*/\.git/*' -exec gsed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
    find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +

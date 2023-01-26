@@ -13,7 +13,7 @@ spec:
     path: cloudwatch-logging
     directory:
       recurse: true
-      include: *.yaml
+      include: '*.yaml'
 
   destination:
     server: https://kubernetes.default.svc
