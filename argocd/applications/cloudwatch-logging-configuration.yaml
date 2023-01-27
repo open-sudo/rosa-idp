@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: namespace-configuration-operator
+  name: cloudwatch-logging-configuration
   namespace: openshift-gitops
   finalizers:
   - resources-finalizer.argocd.argoproj.io  
@@ -10,12 +10,13 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: namespace-configuration
+    path: cloudwatch-logging/configuration
     directory:
       include: '*.yaml'
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: namespace-configuration-operator
+    namespace: openshift-logging
   syncPolicy:
     automated:
       prune: true
@@ -23,9 +24,11 @@ spec:
     syncOptions:
     - CreateNamespace=true
     - RespectIgnoreDifferences=true
-    - ApplyOutOfSyncOnly=true    
+    - Replace=true
+    - ServerSideApply=true
     retry:
+      limit: 100
       backoff:
         duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
         factor: 2 # a factor to multiply the base duration after each failed retry
-        maxDuration: 10m # the maximum amount of time allowed for the backoff strategy
+        maxDuration: 3m # the maximum amount of time allowed for the backoff strategy 

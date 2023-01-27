@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: namespace-configuration-operator
+  name: namespace-configuration
   namespace: openshift-gitops
   finalizers:
   - resources-finalizer.argocd.argoproj.io  
@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: namespace-configuration
+    path: namespace-configuration/configuration
     directory:
       include: '*.yaml'
   destination:

@@ -12,7 +12,6 @@ spec:
     targetRevision: HEAD
     path: cloudwatch-logging
     directory:
-      recurse: true
       include: '*.yaml'
 
   destination:
