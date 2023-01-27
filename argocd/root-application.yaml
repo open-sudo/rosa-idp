@@ -21,7 +21,7 @@ spec:
       - RespectIgnoreDifferences=true
       - ApplyOutOfSyncOnly=true       
     retry:
-      limit: 0 
+      limit: 50 
       backoff:
         duration: 5s 
         factor: 2 
@@ -63,5 +63,14 @@ spec:
     name: service-mesh-ingress
     jsonPointers:
     - /spec/source/helm/values     
-
+  - group: argoproj.io
+    kind: Application
+    namespace: openshift-gitops
+    name: dbaas-operator
+    jsonPointers:
+    - /spec/     
+  - group: rds.services.k8s.aws/v1alpha1
+    kind: DBInstance
+    jsonPointers:
+    - /
     

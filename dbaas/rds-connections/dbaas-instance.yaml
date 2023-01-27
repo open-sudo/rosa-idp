@@ -1,14 +1,14 @@
 apiVersion: dbaas.redhat.com/v1alpha1
 kind: DBaaSInstance
 metadata:
-  name: rds-postgres-shared-instance
+  name: dbaas-rds-postgres-shared-instance
   namespace: openshift-dbaas-operator
 
 spec:
   inventoryRef:
     name: rds-shared-inventory
     namespace: openshift-dbaas-operator
-  name: rds-postgres-shared-instance
+  name: dbaas-rds-postgres-shared-instance
   otherInstanceParams:
     Engine: postgres
 
