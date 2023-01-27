@@ -4,7 +4,6 @@
 1) AWS CLI is installed and configured with access and secret keys
 2) OC CLI is installed and you are logged in into OpenShift
 3) GIT CLI is installed and you are logged in into Git
-4) If you are on Mac OS, please install gsed. The deploy script will fail otherwise.
 
 # Deployment
 
@@ -145,7 +144,7 @@ aws cloudwatch put-dashboard --dashboard-name "ROSAMetricsDashboard" --dashboard
 Finally, log into <a href="aws.amazon.com/cloudwatch">Cloudwatch</a> to review your dashboard and your cluster metrics.
 
 ### Namespace Configuration
-To test this module create two namespaces of different sizes: small, medium, large:
+To test this module, create three projects of different sizes: small, medium, and large:
 
 ```
 cat << EOF | oc apply -f -
@@ -186,3 +185,12 @@ oc describe project <PROJECT NAME>>
 ```
 You should see project quotas of 10Gi, 30Gi, and 50Gi respectivelly.
 
+```
+Quota:
+			Name:				tiger-project-quota
+			Resource			Used	Hard
+			--------			----	----
+			requests.cpu			0	30
+			requests.ephemeral-storage	0	30Gi
+			requests.memory			0	30Gi
+```
