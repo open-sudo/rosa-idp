@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rds-connections
+  name: gitlab-oauth
   namespace: openshift-gitops
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://github.com/open-sudo/rosa-idp.git
+    repoURL: https://github.com/kubecutle/rosa-idp.git
     targetRevision: HEAD
     path: gitlab-oauth
     directory:
       include: "*.yaml"
   destination:
     server: https://kubernetes.default.svc
-    namespace: openshift-dbaas-operator
+    namespace: openshift-config
   syncPolicy:
     automated:
       prune: true
