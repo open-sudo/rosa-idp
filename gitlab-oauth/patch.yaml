@@ -13,7 +13,7 @@ spec:
         kind: OAuth
         name: cluster
       patchTemplate: |
-        {{- $backStageDemoIDP:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "gitlab" (dict "url" "https://gitlab.com" "ca" (dict "name" "") "clientID" "f3d0a18ecf3675808714b7e2184cea79869e578a6e854504a70da96529f7cccd" "clientSecret" (dict "name" "gitlab-oauth-client-secret"))  	-}}
+        {{- $backStageDemoIDP:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "gitlab" (dict "url" "https://gitlab.com" "ca" (dict "name" "") "clientID" ((index . 1).data.clientID | b64dec)  "clientSecret" (dict "name" "gitlab-oauth-client-secret"))  	-}}
         spec:
           identityProviders:
           {{- if (not (has $backStageDemoIDP (index . 0).spec.identityProviders)) }}
