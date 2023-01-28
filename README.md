@@ -194,3 +194,14 @@ Quota:
 			requests.ephemeral-storage	0	30Gi
 			requests.memory			0	30Gi
 ```
+
+### GitLab Authentication
+Create an OIDC application in GitLab using the callback url returned by:
+
+```
+echo `oc whoami --show-server | cut -c12-` | awk '{print "https://oauth-openshift.apps"$1"/oauth2callback/GitLab"}'
+```
+Next, create a secret with the client Id and secret obtained from GitLab:
+```
+oc create secret generic gitlab-oauth-client-secret --from-literal=clientID=${GITLAB_CLIENT_ID} --from-literal=clientSecret=${GITLAB_CLIENT_SECRET} -n openshift-config
+```
