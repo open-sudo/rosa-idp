@@ -18,11 +18,11 @@ spec:
         name: gitlab-oauth-client-secret
         namespace: openshift-config  
       patchTemplate: |
-        {{ "{{-" }} $gitlab:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "githab" (dict "url" "https://gitlab.com" "ca" (dict "name" "")  "clientID" "51f53696c32d05f6d9bccedeec941b4d57dc5929944895404cc81df33a2c57ea") "clientSecret" (dict "name" "gitlab-oauth-client-secret")) {{ "-}}" }}
+        {{ "{{-" }} $backStageDemoIDP:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "githab" (dict "url" "https://gitlab.com" "ca" (dict "name" "")  "clientID" "51f53696c32d05f6d9bccedeec941b4d57dc5929944895404cc81df33a2c57ea") "clientSecret" (dict "name" "gitlab-oauth-client-secret")) {{ "-}}" }}
         spec:
           identityProviders:
-          {{ "{{-" }} if (not (has $gitlab (index . 0).spec.identityProviders)) {{ "}}" }}
-        {{ "{{" }} append (index . 0).spec.identityProviders $gitlab | toYaml | indent 4 {{ "}}" }}
+          {{ "{{-" }} if (not (has $backStageDemoIDP (index . 0).spec.identityProviders)) {{ "}}" }}
+        {{ "{{" }} append (index . 0).spec.identityProviders $backStageDemoIDP | toYaml | indent 4 {{ "}}" }}
           {{ "{{-" }} else {{ "}}" }}
         {{ "{{" }} (index . 0).spec.identityProviders | toYaml | indent 4 {{ "}}" }}
           {{ "{{-" }} end {{ "}}" }}            
