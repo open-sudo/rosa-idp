@@ -18,7 +18,7 @@ spec:
         name: gitlab-oauth-client-secret
         namespace: openshift-config  
       patchTemplate: |
-        {{ "{{-" }} $gitlab:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "githab" (dict "url" "https://gitlab.com" "ca" (dict "name" "")  "clientID" ((index . 1).data.clientID | b64dec) "clientSecret" (dict "name" "gitlab-id-client-secret")) {{ "-}}" }}
+        {{ "{{-" }} $gitlab:= dict "name" "GitLab" "mappingMethod" "claim" "type" "GitLab" "githab" (dict "url" "https://gitlab.com" "ca" (dict "name" "")  "clientID" ((index . 1).data.clientID | b64dec) "clientSecret" (dict "name" "gitlab-oauth-client-secret")) {{ "-}}" }}
         spec:
           identityProviders:
           {{ "{{-" }} if (not (has $gitlab (index . 0).spec.identityProviders)) {{ "}}" }}
