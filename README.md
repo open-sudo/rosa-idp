@@ -196,12 +196,20 @@ Quota:
 ```
 
 ### GitLab Authentication
-Create an OIDC application in GitLab using the callback url returned by:
+Log in into GitLab. Click on Applications in the User Settings menu. Then create an application making sure oidc is selected and using following URL as redirect link:
 
 ```
 echo `oc whoami --show-console | cut -c35-` | awk '{print "https://oauth-openshift."$1"/oauth2callback/GitLab"}'
 ```
-Next, create a secret with the client Id and secret obtained from GitLab:
+Copy the secret and client id that are provided and polulate following environment variables:
+```
+export GITLAB_CLIENT_ID=<your client id>
+export GITLAB_CLIENT_SECRET=<your client secret>
+```
+
+Next, copy paste following command to create a secret:
 ```
 oc create secret generic gitlab-oauth-client-secret --from-literal=clientID=${GITLAB_CLIENT_ID} --from-literal=clientSecret=${GITLAB_CLIENT_SECRET} -n openshift-config
 ```
+
+Wait a few minutes and go to your OpenShift console to validate that you can now log in with GitLab.
