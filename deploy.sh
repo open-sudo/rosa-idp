@@ -8,7 +8,6 @@ fi
 echo "Current repo url is: $ORIGIN_URL"
 if [[ "$ORIGIN_URL" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
-  exit;
 fi
 
 export GITHUB_BASE_URL=`dirname $ORIGIN_URL`
@@ -85,86 +84,8 @@ export CIDR=$(aws ec2 describe-vpcs   --filters "Name=vpc-id,Values=$VPC"   --qu
 export SG=$(aws ec2 describe-instances --filters   "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{SecurityGroups:SecurityGroups}'   --region $REGION   | jq -r '.[0][0].SecurityGroups[0].GroupId')
 echo "CIDR - $CIDR,  SG - $SG"
 
-export GSED=`which gsed`
-if [ ! -z "$GSED" ]; then
-   echo "gsed found. using it instead of sed"
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__REGION__|${REGION}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__SG__|${SG}|g" {} +
-else
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__SG__|${SG}|g" {} +
 
-fi
-deploy=`cat ./deploy.sh`
-
-echo "$deploy" > deploy.sh
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
-       --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-         ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
-     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets 
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs
-  
-STACK_NAMES=("rosa-idp-cw-logs" "rosa-idp-rds-inventory-credentials" "rosa-idp-rds-shared-instance-credentials" "rosa-idp-iam-external-secrets" 
-"rosa-idp-iam-external-secrets-rds" "rosa-idp-ecr" "rosa-idp-cw-metrics-credentials" "rosa-iam-efs")
-
-echo "===========================CloudFormation Status==========================="
-
-
-for stack in ${!STACK_NAMES[@]}
-do
-        STACK_NAME="${STACK_NAMES[stack]}"
-        StackResultStatus="CREATE_IN_PROGRESS"
-
-        while [ $StackResultStatus == "CREATE_IN_PROGRESS" ]
-        do
-                sleep 5
-                StackResult=`aws cloudformation describe-stacks --stack-name ${STACK_NAME}`
-                StackResultStatus=`echo $StackResult  | jq -r '.Stacks[0].StackStatus'`
-                echo "${STACK_NAME} : $StackResultStatus"
-        done
-        echo -e "\n"
-        if [[ "$StackResultStatus" != *"CREATE_COMPLETE"* ]]; then
-                echo -e "Problems executing stack: $STACK_NAME. Find out more with:\n\n      aws cloudformation describe-stack-events --stack-name $STACK_NAME \n\n";
-                exit;
-        fi
-done
-
-
-aws ec2 authorize-security-group-ingress  --group-id $SG  --protocol tcp  --port 2049 --cidr $CIDR | jq . --region $REGION
-
-EFS=$(aws efs create-file-system --creation-token efs-token-1 --region ${REGION} --encrypted | jq -r '.FileSystemId')
-
+EFS='fs-0f66d8c872ba00ead'
 echo "EFS $EFS"
 
 for SUBNET in $(aws ec2 describe-subnets \
