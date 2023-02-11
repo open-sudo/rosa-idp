@@ -85,7 +85,7 @@ export SG=$(aws ec2 describe-instances --filters   "Name=private-dns-name,Values
 echo "CIDR - $CIDR,  SG - $SG"
 
 
-EFS='fs-0f66d8c872ba00ead'
+EFS=$(aws efs create-file-system --creation-token efs-token-2 --region ${REGION} --encrypted | jq -r '.FileSystemId')
 echo "EFS $EFS"
 
 for SUBNET in $(aws ec2 describe-subnets \
