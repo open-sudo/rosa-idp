@@ -93,6 +93,7 @@ for SUBNET in $(aws ec2 describe-subnets \
   --query 'Subnets[*].{SubnetId:SubnetId}' \
   --region $REGION \
   | jq -r '.[].SubnetId'); do \
+    echo "Subnet: $SUBNET"
     MOUNT_TARGET=$(aws efs create-mount-target --file-system-id $EFS \
        --subnet-id $SUBNET --security-groups $SG \
        --region $REGION \
