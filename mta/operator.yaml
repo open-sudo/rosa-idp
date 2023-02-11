@@ -9,7 +9,6 @@ spec:
   name: mta-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  currentCSV: mta-operator.v6.0.0
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup

@@ -21,6 +21,12 @@ subjects:
   - kind: ServiceAccount
     name: openshift-gitops-argocd-server
     namespace: openshift-gitops
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-server
+    namespace: openshift-cluster-csi-drivers
+  - kind: ServiceAccount
+    name: openshift-gitops-argocd-server
+    namespace: mta
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

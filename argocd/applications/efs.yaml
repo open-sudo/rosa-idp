@@ -8,14 +8,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/open-sudo/rosa-idp.git
+    repoURL: https://github.com/kubecutle/rosa-idp.git
     targetRevision: HEAD
     path: efs
     directory:
       include: '*.yaml'
   destination:
     server: https://kubernetes.default.svc
-    namespace: efs
+    namespace: openshift-cluster-csi-drivers
   syncPolicy:
     automated:
       prune: true
