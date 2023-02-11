@@ -109,34 +109,34 @@ echo "$deploy" > deploy.sh
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-         ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs
+         ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-cw-logs-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-metrics-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials 
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
-     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr 
+     --capabilities CAPABILITY_IAM  --stack-name rosa-idp-ecr-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds 
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets 
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials
+     --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs-${CLUSTER_NAME}
   
-STACK_NAMES=("rosa-idp-cw-logs" "rosa-idp-rds-inventory-credentials" "rosa-idp-rds-shared-instance-credentials" "rosa-idp-iam-external-secrets" 
-"rosa-idp-iam-external-secrets-rds" "rosa-idp-ecr" "rosa-idp-cw-metrics-credentials" "rosa-iam-efs")
+STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}" "rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}" "rosa-idp-iam-external-secrets-${CLUSTER_NAME}" 
+"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}" "rosa-iam-efs-${CLUSTER_NAME}")
 
 echo "===========================CloudFormation Status==========================="
 
