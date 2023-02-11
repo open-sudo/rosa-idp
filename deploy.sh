@@ -170,7 +170,7 @@ echo "Subnet: $SUBNET"
 AWS_ZONE=$(aws ec2 describe-subnets --filters Name=subnet-id,Values=$SUBNET   --region $REGION | jq -r '.Subnets[0].AvailabilityZone')
 echo "AWS Zone $AWS_ZONE"
   
-EFS=$(aws efs create-file-system --creation-token efs-token-1    --availability-zone-name $AWS_ZONE    --region $REGION    --encrypted | jq -r '.FileSystemId')
+EFS=$(aws efs create-file-system --creation-token efs-token-${CLUSTER_NAME}    --availability-zone-name $AWS_ZONE    --region $REGION    --encrypted | jq -r '.FileSystemId')
 echo "EFS $EFS"
 
 sleep 20
