@@ -82,24 +82,22 @@ export NODE=$(oc get nodes --selector=node-role.kubernetes.io/worker  -o jsonpat
 export VPC=$(aws ec2 describe-instances   --filters "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{VpcId:VpcId}'  --region $REGION   | jq -r '.[0][0].VpcId')
 export CIDR=$(aws ec2 describe-vpcs   --filters "Name=vpc-id,Values=$VPC"   --query 'Vpcs[*].CidrBlock'   --region $REGION   | jq -r '.[0]')
 export SG=$(aws ec2 describe-instances --filters   "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{SecurityGroups:SecurityGroups}'   --region $REGION   | jq -r '.[0][0].SecurityGroups[0].GroupId')
-echo "CIDR - $CIDR,  SG - $SG"
+echo "VPC - $VPS, CIDR - $CIDR,  SG - $SG"
+
+aws ec2 authorize-security-group-ingress  --group-id $SG  --protocol tcp  --port 2049  --cidr $CIDR --region $REGION | jq .
 
 
-EFS=$(aws efs create-file-system --creation-token efs-token-2 --region ${REGION} --encrypted | jq -r '.FileSystemId')
+
+SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Name=tag:Name,Values='*-private*'   --query 'Subnets[*].{SubnetId:SubnetId}'   --region $REGION  | jq -r '.[0].SubnetId')
+echo "Subnet: $SUBNET"
+AWS_ZONE=$(aws ec2 describe-subnets --filters Name=subnet-id,Values=$SUBNET   --region $REGION | jq -r '.Subnets[0].AvailabilityZone')
+echo "AWS Zone $AWS_ZONE"
+
+EFS=$(aws efs create-file-system --creation-token efs-token-1    --availability-zone-name $AWS_ZONE    --region $REGION    --encrypted | jq -r '.FileSystemId')
 echo "EFS $EFS"
 
-for SUBNET in $(aws ec2 describe-subnets \
-  --filters Name=vpc-id,Values=$VPC Name=tag:Name,Values='*-private*' \
-  --query 'Subnets[*].{SubnetId:SubnetId}' \
-  --region $REGION \
-  | jq -r '.[].SubnetId'); do \
-    echo "Subnet: $SUBNET"
-    MOUNT_TARGET=$(aws efs create-mount-target --file-system-id $EFS \
-       --subnet-id $SUBNET --security-groups $SG \
-       --region $REGION \
-       | jq -r '.MountTargetId'); \
-    echo $MOUNT_TARGET; \
- done
+MOUNT_TARGET=$(aws efs create-mount-target --file-system-id $EFS   --subnet-id $SUBNET --security-groups $SG   --region $REGION  | jq -r '.MountTargetId')
+echo $MOUNT_TARGET
 
 echo -e "Commiting changes to $ORIGIN_URL\n"
 git add -A
