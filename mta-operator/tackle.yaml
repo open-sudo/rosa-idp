@@ -5,4 +5,5 @@ metadata:
   namespace: mta
 spec:
   feature_auth_required: 'true'
-  rwx_supported: 'false'  
+  rwx_storage_class: 'efs-sc'
+

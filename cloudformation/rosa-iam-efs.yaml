@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+
+Parameters:
+  OidcProvider:
+    Type: String
+  AppNamespace:
+    Type: String
+    Default: "openshift-cluster-csi-drivers"
+  AppServiceAccountName:
+    Type: String
+    Default: "aws-efs-csi-driver-operator"
+  AppServiceAccountControllerName:
+    Type: String
+    Default: "aws-efs-csi-driver-controller-sa"
+  ClusterName:
+    Type: String
+
+Resources:
+  RosaEfsRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub
+        - ${RosaClusterName}
+        - RosaClusterName: !Join
+          - ''
+          - - !Ref ClusterName
+            - '-aws-efs-csi-operator'
+      AssumeRolePolicyDocument: !Sub
+        - |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Federated": "${IamOidcProviderArn}"
+                    },
+                    "Action": "sts:AssumeRoleWithWebIdentity",
+                    "Condition": {
+                        "StringEquals": {
+                            "${OidcProvider}:sub":[ "system:serviceaccount:${AppNamespace}:${AppServiceAccountName}", "system:serviceaccount:${AppNamespace}:${AppServiceAccountControllerName}"]
+                        }
+                    }
+                }
+            ]
+          }
+        - IamOidcProviderArn: !Join
+          - ''
+          - - 'arn:aws:iam::'
+            - !Ref AWS::AccountId
+            - ':oidc-provider/'
+            - !Ref OidcProvider
+          OidcProvider: !Ref OidcProvider
+          AppNamespace: !Ref AppNamespace
+          AppServiceAccountName: !Ref AppServiceAccountName
+
+      Path: "/"
+  RolePolicies:
+    Type: "AWS::IAM::Policy"
+    Properties:
+      PolicyName: "RosaEfs"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Action:
+              - "elasticfilesystem:DescribeAccessPoints"
+              - "elasticfilesystem:DescribeFileSystems"
+              - "elasticfilesystem:DescribeMountTargets"
+              - "ec2:DescribeAvailabilityZones"
+            Resource: "*"
+          - Effect: "Allow"
+            Action:
+              - "elasticfilesystem:CreateAccessPoint"
+            Resource: "*"
+            Condition:
+               StringLike: 
+                 "aws:RequestTag/efs.csi.aws.com/cluster": "true"            
+          - Effect: "Allow"
+            Action:
+              - "elasticfilesystem:DeleteAccessPoint"
+            Resource: "*"
+            Condition:
+               StringEquals: 
+                   "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
+      Roles:
+        - Ref: "RosaEfsRole"
+             
+          
+Outputs:
+    RosaEfsRoleArn:
+        Value: !GetAtt RosaEfsRole.Arn
