@@ -79,12 +79,12 @@ rosa-cloudwatch-metrics-secret-store   4m36s   Valid    ReadWrite      True
 
 The following command shows further success:
 ```shell
-oc get externalsecret rosa-cloudwatch-metrics-credentials -n amazon-cloudwatch
+oc get externalsecret rosa-cloudwatch-metrics-credentials-${CLUSTER_NAME} -n amazon-cloudwatch
 ```
 Following result is expected with status SecretSynced and readiness set to True
 ````{verbatim}
 NAME                                  STORE                                  REFRESH INTERVAL   STATUS         READY
-rosa-cloudwatch-metrics-credentials   rosa-cloudwatch-metrics-secret-store   1m                 SecretSynced   True
+rosa-cloudwatch-metrics-credentials-${CLUSTER_NAME}   rosa-cloudwatch-metrics-secret-store   1m                 SecretSynced   True
 ````
 Validate that the external secret was converted into a secret called aws-credentials.
 
@@ -94,7 +94,7 @@ oc get secret aws-credentials
 
 ### AWS Secret Manager
 Credentials used in your cluster are all kept in <a href="https://aws.amazon.com/secretsmanager">AWS Secret Manager</a>. Login into this secret manager, and validate that you can see an entry called: 
-rosa-cloudwatch-metrics-credentials. Retrieve its value and apply a <a href="https://www.base64decode.org/">base64 decoder</a> to it. The result should be of the form:
+rosa-cloudwatch-metrics-credentials-${CLUSTER_NAME}. Retrieve its value and apply a <a href="https://www.base64decode.org/">base64 decoder</a> to it. The result should be of the form:
 ````{verbatim}
 [AmazonCloudWatchAgent]
 aws_access_key_id = AKIAIOSFODNN7EXAMPLE
