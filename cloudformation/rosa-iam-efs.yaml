@@ -3,22 +3,17 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   SubnetId:
     Type: String
-  VPC:
-    Type: String
   SecurityGroupName:
     Type: String
 Resources:
-  EFSSecurityGroup:
-        Type: "AWS::EC2::SecurityGroup"
-        Properties:
-            GroupDescription: "security group for the prod EFS"
-            GroupName: "test-EFS-SG"
-            VpcId: !Ref VPC
-            SecurityGroupIngress: 
-              - CidrIp: 0.0.0.0/0
-                FromPort: 2049
-                IpProtocol: "tcp"
-                ToPort: 2049
+  InboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref SecurityGroupName
+      IpProtocol: tcp
+      FromPort: 2049
+      ToPort: 2049
+      SourceSecurityGroupId: !Ref SecurityGroupName
 
   EFSFileSystem:
     Type: AWS::EFS::FileSystem
