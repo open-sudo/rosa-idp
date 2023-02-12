@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  MountTargetVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+ 
+  MountTargetSubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 
+      VpcId: !Ref MountTargetVPC
+      AvailabilityZone: "ca-central-1a"
+ 
+  FileSystemResource:
+    Type: 'AWS::EFS::FileSystem'
+    Properties:
+      AvailabilityZoneName: us-east-1a
+      BackupPolicy:
+        Status: ENABLED
+      Encrypted: true
+
+  MountTargetResource1:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref FileSystemResource
+      SubnetId: !Ref MountTargetSubnetOne
+      SecurityGroups:
+      - !GetAtt MountTargetVPC.DefaultSecurityGroup
+ 
+  AccessPointResource:
+    Type: 'AWS::EFS::AccessPoint'
+    Properties:
+      FileSystemId: !Ref FileSystemResource
+      PosixUser:
+        Uid: "13234"
+        Gid: "1322"
+        SecondaryGids:
+          - "1344"
+          - "1452"
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: "708798"
+          OwnerUid: "7987987"
+          Permissions: "0755"
+        Path: "/testcfn/abc"

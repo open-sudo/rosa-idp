@@ -83,7 +83,9 @@ export NODE=$(oc get nodes --selector=node-role.kubernetes.io/worker  -o jsonpat
 export VPC=$(aws ec2 describe-instances   --filters "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{VpcId:VpcId}'  --region $REGION   | jq -r '.[0][0].VpcId')
 export CIDR=$(aws ec2 describe-vpcs   --filters "Name=vpc-id,Values=$VPC"   --query 'Vpcs[*].CidrBlock'   --region $REGION   | jq -r '.[0]')
 export SG=$(aws ec2 describe-instances --filters   "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{SecurityGroups:SecurityGroups}'   --region $REGION   | jq -r '.[0][0].SecurityGroups[0].GroupId')
-echo "CIDR - $CIDR,  SG - $SG"
+export SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Name=tag:Name,Values='*-private*'   --query 'Subnets[*].{SubnetId:SubnetId}'   --region $REGION  | jq -r '.[0].SubnetId')
+
+echo "CIDR - $CIDR,  SG - $SG, SUBNET - $SUBNET"
 
 export GSED=`which gsed`
 if [ ! -z "$GSED" ]; then
@@ -133,10 +135,14 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-i
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs-${CLUSTER_NAME}
+      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs-roles-${CLUSTER_NAME}
+
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
+    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=SubnetId,ParameterValue=$SUBNET ParameterKey=SecurityGroupName,ParameterValue=${SG} ParameterKey=VPC,ParameterValue=${VPC} --stack-name rosa-iam-efs-${CLUSTER_NAME}
+
   
 STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}" "rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}" "rosa-idp-iam-external-secrets-${CLUSTER_NAME}" 
-"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}" "rosa-iam-efs-${CLUSTER_NAME}")
+"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}" "rosa-iam-efs-roles-${CLUSTER_NAME}" "rosa-iam-efs-${CLUSTER_NAME}")
 
 echo "===========================CloudFormation Status==========================="
 
@@ -161,22 +167,9 @@ do
 done
 
 
-aws ec2 authorize-security-group-ingress  --group-id $SG  --protocol tcp  --port 2049 --cidr $CIDR --region $REGION  | jq .
 
-
-      
-SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Name=tag:Name,Values='*-private*'   --query 'Subnets[*].{SubnetId:SubnetId}'   --region $REGION  | jq -r '.[0].SubnetId')
-echo "Subnet: $SUBNET"
-AWS_ZONE=$(aws ec2 describe-subnets --filters Name=subnet-id,Values=$SUBNET   --region $REGION | jq -r '.Subnets[0].AvailabilityZone')
-echo "AWS Zone $AWS_ZONE"
-  
-EFS=$(aws efs create-file-system --creation-token efs-token-${CLUSTER_NAME}    --availability-zone-name $AWS_ZONE    --region $REGION    --encrypted | jq -r '.FileSystemId')
+EFS=`aws cloudformation describe-stacks --stack-name efs-creation4 --query Stacks[0].Outputs[0].OutputValue`      
 echo "EFS $EFS"
-
-sleep 20
-MOUNT_TARGET=$(aws efs create-mount-target --file-system-id $EFS   --subnet-id $SUBNET --security-groups $SG   --region $REGION  | jq -r '.MountTargetId')
-echo $MOUNT_TARGET
-
 
 if [ ! -z "$GSED" ]; then
    find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__EFS__|${EFS}|g" {} +

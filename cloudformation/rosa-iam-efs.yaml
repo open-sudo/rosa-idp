@@ -1,93 +1,43 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
-
 Parameters:
-  OidcProvider:
+  SubnetId:
     Type: String
-  AppNamespace:
+  VPC:
     Type: String
-    Default: "openshift-cluster-csi-drivers"
-  AppServiceAccountName:
+  SecurityGroupName:
     Type: String
-    Default: "aws-efs-csi-driver-operator"
-  AppServiceAccountControllerName:
-    Type: String
-    Default: "aws-efs-csi-driver-controller-sa"
-  ClusterName:
-    Type: String
-
 Resources:
-  RosaEfsRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      RoleName: !Sub
-        - ${RosaClusterName}
-        - RosaClusterName: !Join
-          - ''
-          - - !Ref ClusterName
-            - '-aws-efs-csi-operator'
-      AssumeRolePolicyDocument: !Sub
-        - |
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Effect": "Allow",
-                    "Principal": {
-                        "Federated": "${IamOidcProviderArn}"
-                    },
-                    "Action": "sts:AssumeRoleWithWebIdentity",
-                    "Condition": {
-                        "StringEquals": {
-                            "${OidcProvider}:sub":[ "system:serviceaccount:${AppNamespace}:${AppServiceAccountName}", "system:serviceaccount:${AppNamespace}:${AppServiceAccountControllerName}"]
-                        }
-                    }
-                }
-            ]
-          }
-        - IamOidcProviderArn: !Join
-          - ''
-          - - 'arn:aws:iam::'
-            - !Ref AWS::AccountId
-            - ':oidc-provider/'
-            - !Ref OidcProvider
-          OidcProvider: !Ref OidcProvider
-          AppNamespace: !Ref AppNamespace
-          AppServiceAccountName: !Ref AppServiceAccountName
+  EFSSecurityGroup:
+        Type: "AWS::EC2::SecurityGroup"
+        Properties:
+            GroupDescription: "security group for the prod EFS"
+            GroupName: "test-EFS-SG"
+            VpcId: !Ref VPC
+            SecurityGroupIngress: 
+              - CidrIp: 0.0.0.0/0
+                FromPort: 2049
+                IpProtocol: "tcp"
+                ToPort: 2049
 
-      Path: "/"
-  RolePolicies:
-    Type: "AWS::IAM::Policy"
+  EFSFileSystem:
+    Type: AWS::EFS::FileSystem
     Properties:
-      PolicyName: "RosaEfs"
-      PolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Action:
-              - "elasticfilesystem:DescribeAccessPoints"
-              - "elasticfilesystem:DescribeFileSystems"
-              - "elasticfilesystem:DescribeMountTargets"
-              - "ec2:DescribeAvailabilityZones"
-            Resource: "*"
-          - Effect: "Allow"
-            Action:
-              - "elasticfilesystem:CreateAccessPoint"
-            Resource: "*"
-            Condition:
-               StringLike: 
-                 "aws:RequestTag/efs.csi.aws.com/cluster": "true"            
-          - Effect: "Allow"
-            Action:
-              - "elasticfilesystem:DeleteAccessPoint"
-            Resource: "*"
-            Condition:
-               StringEquals: 
-                   "aws:ResourceTag/efs.csi.aws.com/cluster": "true"
-      Roles:
-        - Ref: "RosaEfsRole"
-             
-          
+      Encrypted: true
+      BackupPolicy:
+        Status: ENABLED
+  EFSMountTargetAZ1:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId:
+        Ref: EFSFileSystem
+      SubnetId: !Ref SubnetId
+      SecurityGroups:
+      - !Ref SecurityGroupName
 Outputs:
-    RosaEfsRoleArn:
-        Value: !GetAtt RosaEfsRole.Arn
+  ElasticFileSystem:
+    Description: Elastic file system.
+    Value:
+      Ref: EFSFileSystem
+
+
