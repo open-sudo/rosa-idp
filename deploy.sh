@@ -133,7 +133,7 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-s
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs-roles.yaml \
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
       ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs-roles-${CLUSTER_NAME}
 
@@ -168,7 +168,7 @@ done
 
 
 
-EFS=`aws cloudformation describe-stacks --stack-name efs-creation4 --query Stacks[0].Outputs[0].OutputValue`      
+EFS=`aws cloudformation describe-stacks --stack-name rosa-iam-efs-${CLUSTER_NAME} --query Stacks[0].Outputs[0].OutputValue`      
 echo "EFS $EFS"
 
 if [ ! -z "$GSED" ]; then
