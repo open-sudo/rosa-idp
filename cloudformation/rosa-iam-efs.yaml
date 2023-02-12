@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
+
 Parameters:
+  ClusterName:
+    Type: String
   SubnetId:
     Type: String
   SecurityGroupName:
