@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/kubecutle/rosa-idp.git
+    repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
     path: efs
     directory:
