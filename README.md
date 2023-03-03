@@ -143,6 +143,13 @@ aws cloudwatch put-dashboard --dashboard-name "ROSAMetricsDashboard" --dashboard
 
 Finally, log into <a href="aws.amazon.com/cloudwatch">Cloudwatch</a> to review your dashboard and your cluster metrics.
 
+### Migration Toolkit for Applications
+get the URL to access MTA:
+```
+oc get routes -n mta
+```
+The initial credentials for MTA are admin/Passw0rd!. You will be required to change the password.
+
 ### Namespace Configuration
 To test this module, create three projects of different sizes: small, medium, and large:
 
