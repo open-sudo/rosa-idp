@@ -119,16 +119,11 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-cloud
 aws cloudformation create-stack --template-body file://cloudformation/rosa-ecr.yaml \
      --capabilities CAPABILITY_IAM  --parameters  ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME}  --stack-name rosa-idp-ecr-${CLUSTER_NAME}
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-rds-role.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}
-
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \
+aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-external-secrets-role.yaml \   
     --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
       ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-iam-external-secrets-${CLUSTER_NAME}
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-shared-instance-credentials.yaml \
-     --capabilities CAPABILITY_NAMED_IAM  --parameters  ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME}  --stack-name rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}
+
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --parameters  ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
@@ -136,8 +131,7 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-i
 
 
   
-STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}" "rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}" "rosa-idp-iam-external-secrets-${CLUSTER_NAME}" 
-"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}")
+STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}"  "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}" "rosa-idp-iam-external-secrets-${CLUSTER_NAME}")
 
 echo "===========================CloudFormation Status==========================="
 
