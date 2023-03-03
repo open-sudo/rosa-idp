@@ -13,6 +13,7 @@ aws cloudformation delete-stack --stack-name rosa-idp-iam-external-secrets-${CLU
 aws cloudformation delete-stack --stack-name rosa-idp-ecr-${CLUSTER_NAME}
 aws cloudformation delete-stack --stack-name rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}
 aws cloudformation delete-stack --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
+aws cloudformation delete-stack --stack-name rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}
 
 export REGION=$(rosa describe cluster -c ${CLUSTER_NAME} --output json | jq -r .region.id)
 export NODE=$(oc get nodes --selector=node-role.kubernetes.io/worker  -o jsonpath='{.items[0].metadata.name}')
