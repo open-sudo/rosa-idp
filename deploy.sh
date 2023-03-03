@@ -133,17 +133,11 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-s
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --parameters  ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs-roles.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
-      ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-iam-efs-roles-${CLUSTER_NAME}
 
-aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-efs.yaml \
-    --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=SubnetId,ParameterValue=$SUBNET ParameterKey=SecurityGroupName,ParameterValue=${SG} ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} \
-     --stack-name rosa-iam-efs-${CLUSTER_NAME}
 
   
 STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}" "rosa-idp-rds-shared-instance-credentials-${CLUSTER_NAME}" "rosa-idp-iam-external-secrets-${CLUSTER_NAME}" 
-"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}" "rosa-iam-efs-roles-${CLUSTER_NAME}" "rosa-iam-efs-${CLUSTER_NAME}")
+"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}")
 
 echo "===========================CloudFormation Status==========================="
 
@@ -169,14 +163,6 @@ done
 
 
 
-#EFS=`aws cloudformation describe-stacks --stack-name rosa-iam-efs-${CLUSTER_NAME} --query Stacks[0].Outputs[0].OutputValue`      
-#echo "EFS $EFS"
-
-#if [ ! -z "$GSED" ]; then
-#   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__EFS__|${EFS}|g" {} +
-#else
-#   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__EFS__|${EFS}|g" {} +
-#fi
 
 
 
