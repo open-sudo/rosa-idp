@@ -169,14 +169,14 @@ done
 
 
 
-EFS=`aws cloudformation describe-stacks --stack-name rosa-iam-efs-${CLUSTER_NAME} --query Stacks[0].Outputs[0].OutputValue`      
-echo "EFS $EFS"
+#EFS=`aws cloudformation describe-stacks --stack-name rosa-iam-efs-${CLUSTER_NAME} --query Stacks[0].Outputs[0].OutputValue`      
+#echo "EFS $EFS"
 
-if [ ! -z "$GSED" ]; then
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__EFS__|${EFS}|g" {} +
-else
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__EFS__|${EFS}|g" {} +
-fi
+#if [ ! -z "$GSED" ]; then
+#   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__EFS__|${EFS}|g" {} +
+#else
+#   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__EFS__|${EFS}|g" {} +
+#fi
 
 
 
