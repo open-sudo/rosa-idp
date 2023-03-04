@@ -10,10 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: cloudwatch-logging/configuration
-    directory:
-      include: '*.yaml'
-
+    path: cloudwatch-logging/overlays/default
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-logging

@@ -10,10 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: cloudwatch-metrics
-    directory:
-      recurse: true
-      include: '*.yaml'
+    path: cloudwatch-metrics/overlays/default
 
   destination:
     server: https://kubernetes.default.svc
