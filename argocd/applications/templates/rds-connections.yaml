@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: dbaas/rds-connections/overlays/default
+    path: dbaas/rds-connections/overlays/__CLUSTER_NAME__
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-dbaas-operator

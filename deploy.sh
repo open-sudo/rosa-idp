@@ -87,12 +87,12 @@ export SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Nam
 
 echo "CIDR - $CIDR,  SG - $SG, SUBNET - $SUBNET"
 
-F1="dbaas/rds-connections/overlays/${CLUSTER_NAME}"
-F2="cloudwatch-metrics/overlays/${CLUSTER_NAME}"
-F3="cloudwatch-logging/overlays/${CLUSTER_NAME}"
-F4="argocd/applications/${CLUSTER_NAME}"
+F1="dbaas/rds-connections/overlays/$CLUSTER_NAME"
+F2="cloudwatch-metrics/overlays/$CLUSTER_NAME"
+F3="cloudwatch-logging/overlays/$CLUSTER_NAME"
+F4="argocd/applications/$CLUSTER_NAME"
 
-mkdir {$F1 $F2 $F3 $F4}
+mkdir -p {$F1,$F2,$F3,$F4}
 
 cp -rf dbaas/rds-connections/templates/* $F1
 cp -rf cloudwatch-metrics/templates/* $F2
