@@ -1,0 +1,5 @@
+resources:
+- dbaas-instance.yaml
+- external-secrets-and-store.yaml
+- iam-external-secrets-rds-sa.yaml
+- inventory.yaml

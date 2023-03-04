@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
-    path: dbaas/rds-connections
+    path: dbaas/rds-connections/overlays/default
     directory:
       include: "*.yaml"
   destination:
