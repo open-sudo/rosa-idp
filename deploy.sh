@@ -87,27 +87,36 @@ export SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Nam
 
 echo "CIDR - $CIDR,  SG - $SG, SUBNET - $SUBNET"
 
+F1="dbaas/rds-connections/overlays/${CLUSTER_NAME}"
+F2="cloudwatch-metrics/overlays/${CLUSTER_NAME}"
+F3="cloudwatch-logging/overlays/${CLUSTER_NAME}"
+F4="argocd/applications/${CLUSTER_NAME}"
+
+mkdir {$F1 $F2 $F3 $F4}
+
+cp -rf dbaas/rds-connections/templates/* $F1
+cp -rf cloudwatch-metrics/templates/* $F2
+cp -rf cloudwatch-logging/templates/* $F3
+cp -rf argocd/applications/templates/* $F4
+
+
 export GSED=`which gsed`
 if [ ! -z "$GSED" ]; then
-   echo "gsed found. using it instead of sed"
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__REGION__|${REGION}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec gsed -i "s|__SG__|${SG}|g" {} +
+   COMMAND="gsed"
 else
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__REGION__|${REGION}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
-   find . -type f -not -path '*/\.git/*' -exec sed -i "s|__SG__|${SG}|g" {} +
-
+   COMMAND="sed"
 fi
-deploy=`cat ./deploy.sh`
 
-echo "$deploy" > deploy.sh
+
+echo "Using : $COMMAND"
+find . -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
+find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
+find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
+find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__REGION__|${REGION}|g" {} +
+find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
+find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__SG__|${SG}|g" {} +
+
+
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
