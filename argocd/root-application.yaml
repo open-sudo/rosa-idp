@@ -6,15 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    - repoURL: https://github.com/open-sudo/rosa-idp.git
-      path: argocd/applications/common
-      directory:
-        include: "*.yaml"
-    - repoURL: https://github.com/open-sudo/rosa-idp.git
-      path: argocd/applications/cluster-specific
-      directory:
-       include: "*.yaml"
-
+       repoURL: https://github.com/open-sudo/rosa-idp.git
+       path: argocd/applications
+       directory:
+         include: "*.yaml"
+         recurse: true
+         exclude: '{cluster-to-execlude/*}'
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-gitops

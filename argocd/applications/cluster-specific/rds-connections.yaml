@@ -11,8 +11,6 @@ spec:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: HEAD
     path: dbaas/rds-connections/overlays/default
-    directory:
-      include: "*.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-dbaas-operator
