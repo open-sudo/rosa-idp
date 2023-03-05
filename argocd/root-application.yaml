@@ -11,7 +11,7 @@ spec:
        directory:
          include: "*.yaml"
          recurse: true
-         exclude: '{cluster-to-execlude/*}'
+         exclude: '{templates/*}'
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-gitops
