@@ -97,7 +97,7 @@ mkdir -p {$F1,$F2,$F3,$F4}
 cp -rf dbaas/rds-connections/templates/* $F1
 cp -rf cloudwatch-metrics/templates/* $F2
 cp -rf cloudwatch-logging/templates/* $F3
-cp -rf argocd/applications/templates/* $F4
+cp -rf argocd/templates/* $F4
 
 
 export GSED=`which gsed`
