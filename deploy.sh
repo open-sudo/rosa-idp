@@ -79,14 +79,6 @@ if [[ "$current" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
 fi
 
-export NODE=$(oc get nodes --selector=node-role.kubernetes.io/worker  -o jsonpath='{.items[0].metadata.name}')
-export VPC=$(aws ec2 describe-instances   --filters "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{VpcId:VpcId}'  --region $REGION   | jq -r '.[0][0].VpcId')
-export CIDR=$(aws ec2 describe-vpcs   --filters "Name=vpc-id,Values=$VPC"   --query 'Vpcs[*].CidrBlock'   --region $REGION   | jq -r '.[0]')
-export SG=$(aws ec2 describe-instances --filters   "Name=private-dns-name,Values=$NODE"   --query 'Reservations[*].Instances[*].{SecurityGroups:SecurityGroups}'   --region $REGION   | jq -r '.[0][0].SecurityGroups[0].GroupId')
-export SUBNET=$(aws ec2 describe-subnets   --filters Name=vpc-id,Values=$VPC Name=tag:Name,Values='*-private*'   --query 'Subnets[*].{SubnetId:SubnetId}'   --region $REGION  | jq -r '.[0].SubnetId')
-
-echo "CIDR - $CIDR,  SG - $SG, SUBNET - $SUBNET"
-
 F1="dbaas/rds-connections/overlays/$CLUSTER_NAME"
 F2="cloudwatch-metrics/overlays/$CLUSTER_NAME"
 F3="cloudwatch-logging/overlays/$CLUSTER_NAME"
@@ -109,12 +101,11 @@ fi
 
 
 echo "Using : $COMMAND"
-find . -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
+find . -type f -not -path '*/\.git/*' -not '*/\.sh/*'  -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__REGION__|${REGION}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
-find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__SG__|${SG}|g" {} +
 
 mv argocd/applications/${CLUSTER_NAME}/cluster-root-application.yaml argocd/${CLUSTER_NAME}-root-application.yaml
 
@@ -139,7 +130,6 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-iam-e
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-inventory-credentials.yaml \
      --capabilities CAPABILITY_NAMED_IAM  --parameters  ParameterKey=ClusterName,ParameterValue=${CLUSTER_NAME} --stack-name rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}
-
 
 
   
