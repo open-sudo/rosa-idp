@@ -116,7 +116,7 @@ find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__REGI
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__SG__|${SG}|g" {} +
 
-mv argocd/applications/${CLUSTER_NAME}/cluster-application.yaml argocd/${CLUSTER_NAME}-root-application.yaml
+mv argocd/applications/${CLUSTER_NAME}/cluster-root-application.yaml argocd/${CLUSTER_NAME}-root-application.yaml
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \
