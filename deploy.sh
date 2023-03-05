@@ -101,7 +101,7 @@ fi
 
 
 echo "Using : $COMMAND"
-find . -type f -not -path '*/\.git/*' -not '*/\.sh/*'  -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
+find . -type f -not -path '*/\.git/*' -not -name '*.sh'  -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
 find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__REGION__|${REGION}|g" {} +
