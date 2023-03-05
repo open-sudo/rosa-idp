@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-application
+  name: __CLUSTER_NAME__-root-application
   namespace: openshift-gitops
 spec:
   project: default
   source:
        repoURL: https://github.com/open-sudo/rosa-idp.git
-       path: argocd/applications/common
+       path: argocd/applications/__CLUSTER_NAME__
        directory:
          include: "*.yaml"
   destination:

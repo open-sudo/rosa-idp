@@ -33,8 +33,8 @@ oc apply -f ./argocd/operator.yaml
 oc apply -f ./argocd/rbac.yaml
 oc get route  openshift-gitops-server -n openshift-gitops # repeat until this returns a route
 oc apply -f ./argocd/argocd.yaml
-oc apply -f ./argocd/root-application.yaml
-oc apply -f ./argocd/${CLUSTER_NAME}-application.yaml
+oc apply -f ./argocd/common-root-application.yaml
+oc apply -f ./argocd/${CLUSTER_NAME}-root-application.yaml
 ```
 
 Replace ${CLUSTER_NAME} with the name of the cluster.
