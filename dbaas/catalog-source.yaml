@@ -5,5 +5,5 @@ metadata:
   namespace: openshift-marketplace
 spec:
   sourceType: grpc
-  image: quay.io/osd-addons/dbaas-operator-index@sha256:83649d689a88763cd2c9e22090af4c9d006deed2d2a6f4ed0a9373811734b1b9
+  image: quay.io/osd-addons/dbaas-operator-index@sha256:2788a47fd0ef1ece30898c1e608050ea71036d3329b9772dbb3d1f69313f745c
   displayName: DBaaS Operator
