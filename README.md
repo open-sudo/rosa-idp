@@ -41,6 +41,7 @@ oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```
 
+To configure second cluster so that it uses the same repo, simply log in into the cluster via CLI and repeat steps 2 to 5.
 
 # Validation
 Use following steps to validate your  deployment.
