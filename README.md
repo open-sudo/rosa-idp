@@ -20,6 +20,11 @@ git clone https://github.com/<YOUR GIT USER NAME>/rosa-idp.git
 cd rosa-idp
 ./deploy.sh 
 ```
+The deploy.sh script does 3 things:
+
+1) Modify argocd/root-application.yaml to insert the actual cluster name, the aws account Id, and the region.  
+2) Modify all files under argocd/applications/templates so argocd applications that this folder contains point to your forked repo
+3) Execute the cloudformation scripts and wait for their completion
 
 
 4) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
@@ -36,7 +41,6 @@ oc apply -f ./argocd/argocd.yaml
 oc apply -f ./argocd/root-application.yaml
 ```
 
-Replace ${CLUSTER_NAME} with the name of the cluster.
 
 # Validation
 Use following steps to validate your  deployment.
