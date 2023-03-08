@@ -22,9 +22,9 @@ cd rosa-idp
 ```
 The deploy.sh script does 3 things:
 
-   *) Modify argocd/root-application.yaml to insert the actual cluster name, the aws account Id, and the region.  
-   *) Modify all files at argocd/applications/templates so they point to the forked repo instead of open-sudo
-   *) Execute the cloudformation scripts and wait for their completion
+   * Modify argocd/root-application.yaml to insert the actual cluster name, the aws account Id, and the region.  
+   * Modify all files at argocd/applications/templates so they point to the forked repo instead of open-sudo
+   * Execute the cloudformation scripts and wait for their completion
 
 
 4) Once all stacks are CREATE_COMPLETE, push the modified codebase to your github repo
