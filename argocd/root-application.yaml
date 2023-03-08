@@ -8,7 +8,7 @@ spec:
   source:
        repoURL: https://github.com/open-sudo/rosa-idp.git
        path: argocd/applications
-       targetRevision: param-passing
+       targetRevision: HEAD
        helm:
          values: | 
             awsRegion: __REGION__
