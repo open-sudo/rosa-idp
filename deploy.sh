@@ -96,7 +96,6 @@ $COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" $ROOT_APP
 $COMMAND -i "s|__REGION__|${REGION}|g" $ROOT_APP
 $COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" $ROOT_APP
 
-mv argocd/applications/${CLUSTER_NAME}/cluster-root-application.yaml argocd/${CLUSTER_NAME}-root-application.yaml
 
 aws cloudformation create-stack --template-body file://cloudformation/rosa-cloudwatch-logging-role.yaml \
        --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=OidcProvider,ParameterValue=$OIDC_ENDPOINT \

@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: {{ .Values.targetRevision }}
-    path: cloudwatch-metrics/{{ .Values.clusterName }}
+    path: cloudwatch-metrics
     helm:
       values: |
         awsRegion: {{ .Values.awsRegion }}

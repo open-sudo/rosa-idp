@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
     targetRevision: {{ .Values.targetRevision }}
-    path: cloudwatch-logging/overlays/{{ .Values.clusterName }}
+    path: cloudwatch-logging-configuration
     helm:
       values: | 
         awsRegion: {{ .Values.awsRegion }}

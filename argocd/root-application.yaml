@@ -9,8 +9,6 @@ spec:
        repoURL: https://github.com/open-sudo/rosa-idp.git
        path: argocd/applications
        targetRevision: param-passing
-       directory:
-         include: "*.yaml"
        helm:
          values: | 
             awsRegion: __REGION__
