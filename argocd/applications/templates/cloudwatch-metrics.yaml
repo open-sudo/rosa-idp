@@ -14,7 +14,7 @@ spec:
     helm:
       values: |
         awsRegion: {{ .Values.awsRegion }}
-        awsAccountId: {{ .Values.awsAccountId }}
+        awsAccountId: '{{ .Values.awsAccountId }}'
         clusterName: {{ .Values.clusterName }}
 
   destination:
