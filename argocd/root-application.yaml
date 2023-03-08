@@ -12,7 +12,7 @@ spec:
        helm:
          values: | 
             awsRegion: __REGION__
-            awsAccountId: __AWS_ACCOUNT_ID__
+            awsAccountId: '__AWS_ACCOUNT_ID__'
             clusterName: __CLUSTER_NAME__
   destination:
     server: https://kubernetes.default.svc
