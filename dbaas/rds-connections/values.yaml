@@ -1,0 +1,4 @@
+awsRegion: dummy
+awsAccountId: 'dummy'
+clusterName: 'dummy'
+targetVersion: 'dummy'

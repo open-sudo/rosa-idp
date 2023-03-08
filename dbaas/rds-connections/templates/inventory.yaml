@@ -8,6 +8,6 @@ metadata:
   namespace: openshift-dbaas-operator
 spec:
   credentialsRef:
-    name: rosa-rds-inventory-credentials-__CLUSTER_NAME__
+    name: rosa-rds-inventory-credentials-{{ .Values.clusterName }}
   providerRef:
     name: rds-registration

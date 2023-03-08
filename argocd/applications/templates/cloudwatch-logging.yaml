@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
-    targetRevision: HEAD
+    targetRevision: {{ .Values.targetRevision }}
     path: cloudwatch-logging
     directory:
       include: '*.yaml'

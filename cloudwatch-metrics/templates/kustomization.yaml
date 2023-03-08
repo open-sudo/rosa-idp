@@ -1,5 +1,0 @@
-resources:
-- ../../base
-- external-secrets-and-store.yaml
-- iam-external-secrets-sa.yaml
-- openshift-cloudwatch-metrics.yaml

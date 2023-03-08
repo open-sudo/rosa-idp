@@ -9,8 +9,13 @@ spec:
   project: default
   source:
     repoURL: https://github.com/open-sudo/rosa-idp.git
-    targetRevision: HEAD
-    path: cloudwatch-metrics/overlays/__CLUSTER_NAME__
+    targetRevision: {{ .Values.targetRevision }}
+    path: cloudwatch-metrics/{{ .Values.clusterName }}
+    helm:
+      values: |
+        awsRegion: {{ .Values.awsRegion }}
+        awsAccountId: {{ .Values.awsAccountId }}
+        clusterName: {{ .Values.clusterName }}
 
   destination:
     server: https://kubernetes.default.svc

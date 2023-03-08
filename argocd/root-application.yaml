@@ -8,6 +8,7 @@ spec:
   source:
        repoURL: https://github.com/open-sudo/rosa-idp.git
        path: argocd/applications/common
+       targetRevision: param-passing
        directory:
          include: "*.yaml"
   destination:
