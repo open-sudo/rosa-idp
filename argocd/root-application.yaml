@@ -1,16 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: common-root-application
+  name: root-application
   namespace: openshift-gitops
 spec:
   project: default
   source:
        repoURL: https://github.com/open-sudo/rosa-idp.git
-       path: argocd/applications/common
+       path: argocd/applications
        targetRevision: param-passing
        directory:
          include: "*.yaml"
+       helm:
+         values: | 
+            awsRegion: __REGION__
+            awsAccountId: __AWS_ACCOUNT_ID__
+            clusterName: __CLUSTER_NAME__
   destination:
     server: https://kubernetes.default.svc
     namespace: openshift-gitops

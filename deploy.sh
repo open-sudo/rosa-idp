@@ -79,17 +79,7 @@ if [[ "$current" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
 fi
 
-F1="dbaas/rds-connections/overlays/$CLUSTER_NAME"
-F2="cloudwatch-metrics/overlays/$CLUSTER_NAME"
-F3="cloudwatch-logging/overlays/$CLUSTER_NAME"
-F4="argocd/applications/$CLUSTER_NAME"
-
-mkdir -p {$F1,$F2,$F3,$F4}
-
-cp -rf dbaas/rds-connections/templates/* $F1
-cp -rf cloudwatch-metrics/templates/* $F2
-cp -rf cloudwatch-logging/templates/* $F3
-cp -rf argocd/applications/templates/* $F4
+ROOT_APP="argocd/root-application.yaml"
 
 
 export GSED=`which gsed`
@@ -102,10 +92,9 @@ fi
 
 echo "Using : $COMMAND"
 find . -type f -not -path '*/\.git/*' -not -name '*.sh'  -exec $COMMAND -i "s|open-sudo|${GITHUB_NAME}|g" {} +
-find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" {} +
-find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__OIDC_ENDPOINT__|${OIDC_ENDPOINT}|g" {} +
-find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__REGION__|${REGION}|g" {} +
-find $F1 $F2 $F3 $F4  -type f -not -path '*/\.git/*' -exec $COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" {} +
+$COMMAND -i "s|__AWS_ACCOUNT_ID__|${AWS_ACCOUNT_ID}|g" $ROOT_APP
+$COMMAND -i "s|__REGION__|${REGION}|g" $ROOT_APP
+$COMMAND -i "s|__CLUSTER_NAME__|${CLUSTER_NAME}|g" $ROOT_APP
 
 mv argocd/applications/${CLUSTER_NAME}/cluster-root-application.yaml argocd/${CLUSTER_NAME}-root-application.yaml
 
