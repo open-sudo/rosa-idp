@@ -6,14 +6,14 @@ if [ -z "$ORIGIN_URL" ]; then
   exit;
 fi
 echo "Current repo url is: $ORIGIN_URL"
-if [[ "$ORIGIN_URL" == *"open-sudo"* ]]; then
+if [[ "$ORIGIN_URL" == *"dopen-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
   exit;
 fi
  
 export GITHUB_BASE_URL=`dirname $ORIGIN_URL`
 export GITHUB_NAME=`basename $GITHUB_BASE_URL`
-
+export GITHUB_NAME="${GITHUB_BASE_URL##*github.com?}"
 echo "GitHub name is: $GITHUB_NAME"
 
 if [ -z $GITHUB_NAME ]
