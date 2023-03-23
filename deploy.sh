@@ -10,7 +10,7 @@ if [[ "$ORIGIN_URL" == *"open-sudo"* ]]; then
   echo "You CANNOT apply these changes to open-sudo"
   exit;
 fi
-
+ 
 export GITHUB_BASE_URL=`dirname $ORIGIN_URL`
 export GITHUB_NAME=`basename $GITHUB_BASE_URL`
 
