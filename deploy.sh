@@ -122,7 +122,7 @@ aws cloudformation create-stack --template-body file://cloudformation/rosa-rds-i
 
   
 STACK_NAMES=("rosa-idp-cw-logs-${CLUSTER_NAME}" "rosa-idp-rds-inventory-credentials-${CLUSTER_NAME}"  "rosa-idp-iam-external-secrets-${CLUSTER_NAME}" 
-"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}" "rosa-idp-ecr-${CLUSTER_NAME}" "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}")
+"rosa-idp-iam-external-secrets-rds-${CLUSTER_NAME}"  "rosa-idp-cw-metrics-credentials-${CLUSTER_NAME}")
 
 echo "===========================CloudFormation Status==========================="
 
