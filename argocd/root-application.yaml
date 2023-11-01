@@ -11,7 +11,7 @@ spec:
        targetRevision: HEAD
        helm:
          values: | 
-            awsRegion: __REGION__
+            awsRegion: us-east-1
             awsAccountId: '__AWS_ACCOUNT_ID__'
             clusterName: __CLUSTER_NAME__
   destination:
